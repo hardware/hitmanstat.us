@@ -1,0 +1,19 @@
+npm-debug.log
+node_modules
+Procfile_dev
+template/
+
+# assets
+public/javascripts/*.js
+public/javascripts/*.map
+public/stylesheets/*.css
+views/includes/build/*.pug
+client/bower
+typings
+
+.DS_Store
+.vscode/
+.env
+*~
+*.log
+*.migrate

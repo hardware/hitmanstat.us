@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible' content='IE=edge')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    meta(name='description' content='HITMAN services status')
+    meta(name='keywords' content='HITMAN, services, status')
+
+    title #{title}
+    link(rel='shortcut ico', href='/favicon.ico' type="image/x-icon")
+    include includes/build/css
+
+  body#main-page
+    include header
+    block content
+    include footer
+    include includes/build/javascript

@@ -1,0 +1,57 @@
+#footer-container {
+  clear: both;
+  text-align: center;
+  overflow: hidden;
+  width: 100%;
+}
+
+#footer {
+  margin: auto;
+}
+
+#footer-links {
+  a {
+    -moz-user-select: none;
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    padding: 15px 20px 15px 55px;
+    margin: 20px;
+    border-radius: 4px;
+    border: 2px solid #c6c6c6;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all ease .15s;
+    cursor: pointer;
+
+    &:hover {
+      border: 2px solid #dcdfe3;
+    }
+  }
+
+  #link-reddit {
+    background: url(/images/reddit.png) no-repeat 15px 6px;
+  }
+
+  #link-hf {
+    background: url(/images/hf.png) no-repeat 15px 7px;
+  }
+
+  #link-site {
+    background: url(/images/site.png) no-repeat 15px 7px;
+  }
+}
+
+#footer-text {
+  margin: 0 0 15px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 18px;
+
+  a:hover {
+    text-decoration: underline;
+  }
+}

@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  #services-container
+  #elusive-container
+    img(src=elusive.url width=650 height=338)
+    p Mission status : #{elusive.status}
+  #misc-container
+    audio(preload='auto' id='audio-element' autoplay loop muted)
+      source(src='http://music.meshup.net/hitman.mp3' type='audio/mp3')
+    #sound-icon
+      img(src='/images/sound.png' title='mute/unmute music' onclick='audioControl()')
+    if region == 'EU'
+      #region-icon
+        a(href='http://us.hitmanstat.us' title='switch region to US') US
+    if region == 'US'
+      #region-icon
+        a(href='http://eu.hitmanstat.us' title='switch region to EU') EU

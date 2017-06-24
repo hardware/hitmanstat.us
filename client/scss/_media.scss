@@ -1,0 +1,29 @@
+@media (max-width: 1330px) {
+  #services-container {
+    width:1000px;
+  }
+
+  #services {
+    width: 1000px;
+  }
+}
+
+@media (max-width: 1000px) {
+  #services-container {
+    width:670px;
+  }
+
+  #services {
+    width: 670px;
+  }
+}
+
+@media (max-width: 670px) {
+  #services-container {
+    width:330px;
+  }
+
+  #services {
+    width: 330px;
+  }
+}
