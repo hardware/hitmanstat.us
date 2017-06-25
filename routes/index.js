@@ -6,6 +6,7 @@ var router = express.Router();
 
 router.get('/', function(req, res, next) {
   res.render('index', {
+    path: req.path,
     title: 'HITMAN status',
     region: process.env.REGION,
     elusive:{
