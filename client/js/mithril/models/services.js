@@ -24,7 +24,10 @@ services.refresh = function() {
     })
     .then(function(result) {
       service.status = result.status;
-      service.time = result.time;
+      if(result.title)
+        service.title = result.title;
+      else
+        service.title = (service.status == 'warn') ? 'high load' : '';
     });
   });
   // Steam

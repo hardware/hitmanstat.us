@@ -35,23 +35,34 @@ router.get('/status/:endpoint', function(req, res, next) {
     path: '/'
   };
 
-  https.get(options, function(response) {
+  var request = https.get(options, function(response) {
+    clearTimeout(reqTimeout);
     var responseTime = Date.now() - start;
     // 'auth' endpoint returns 403, other endpoints returns 200
     if (response.statusCode == 200 || response.statusCode == 403) {
       res.json({
-        status:'up',
-        time:responseTime,
+        status:(responseTime > 5000) ? 'warn' : 'up',
       });
     } else {
       res.json({
-        status:'down',
-        time:0
+        status:'down'
       });
     }
   }).on('error', function() {
-    res.json({ status:'down' });
+    clearTimeout(reqTimeout);
+    if(!res.headersSent)
+      res.json({
+        status:'unknown'
+      });
+  }).on('abort', function() {
+    if(!res.headersSent)
+      res.json({
+        status:'down',
+        title:'timeout'
+      });
   });
+
+  var reqTimeout = setTimeout(reqTimeoutWrapper(request), 15000);
 
 });
 
@@ -76,5 +87,11 @@ router.get('/steam', function(req, res, next) {
   });
 
 });
+
+var reqTimeoutWrapper = function(req) {
+  return function() {
+    req.abort();
+  };
+};
 
 module.exports = router;

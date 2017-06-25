@@ -24,13 +24,13 @@ services.view = function() {
 };
 
 function setclass(service) {
-  var status = (service.status) ?  service.status : 'loading';
+  var status = (service.status) ? service.status : 'loading';
   return 'service-status ' + status;
 }
 
 function setState(service) {
-  var status = (service.status) ?  service.status : 'loading...';
-  var title = (service.title) ?  ' - ' + service.title : '';
+  var status = (service.status) ? service.status : 'loading...';
+  var title = (service.title) ? ' - ' + service.title : '';
   return status + title;
 }
 
