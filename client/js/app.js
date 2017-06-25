@@ -1,6 +1,8 @@
 /* global document */
 'use strict';
 
+var play = false;
+
 /**
  * Mithril Namespaces
  */
@@ -21,5 +23,11 @@ var audioElement = document.getElementById('audio-element');
  * Misc Functions
  */
 var audioControl = function() {
-  audioElement.muted = !audioElement.muted;
+  if(!play) {
+    audioElement.play();
+    play = true;
+  } else {
+    audioElement.pause();
+    play = false;
+  }
 };
