@@ -84,45 +84,6 @@ router.get('/status/:endpoint', function(req, res, next) {
 
 });
 
-router.put('/set/:type', function(req, res, next) {
-
-  if(!req.is('application/json')) {
-    res.status(400).send('Bad Request');
-    return;
-  }
-
-  validateToken(res, req.body.token, function() {
-
-    switch (req.params.type) {
-      case 'maintenance':
-        if(typeof req.body.maintenance !== 'string') {
-          res.status(400).send('Bad Request');
-          return;
-        }
-        process.env.HITMAN_MAINTENANCE = req.body.maintenance;
-        console.log('Setting HITMAN_MAINTENANCE=' + process.env.HITMAN_MAINTENANCE);
-        res.send('OK');
-        break;
-
-      case 'elusivetarget':
-        if(typeof req.body.elusive_url !== 'string' || typeof req.body.elusive_status !== 'string') {
-          res.status(400).send('Bad Request');
-          return;
-        }
-        process.env.ELUSIVE_URL = req.body.elusive_url;
-        process.env.ELUSIVE_STATUS = req.body.elusive_status;
-        console.log('Setting ELUSIVE_STATUS=' + process.env.ELUSIVE_STATUS);
-        res.send('OK');
-        break;
-      default:
-        res.status(400).send('Bad Request');
-        break;
-    }
-
-  });
-
-});
-
 router.get('/get/services', function(req, res, next) {
   res.json([
     { name:'auth', endpoint:'auth', platform:'azure' },
@@ -133,13 +94,6 @@ router.get('/get/services', function(req, res, next) {
     { name:'steam cms', endpoint:'cms', platform:'steam' }
   ]);
 });
-
-var validateToken = function(res, token, callback) {
-  if(token === process.env.TOKEN)
-    callback();
-  else
-    res.status(401).send('Unauthorized');
-};
 
 var reqTimeoutWrapper = function(req) {
   return function() {
