@@ -28,6 +28,13 @@ router.get('/get/services', function(req, res, next) {
 
 router.get('/status/:endpoint', function(req, res, next) {
 
+  if(process.env.IOMAINTENANCE) {
+    res.json({
+      status:'maintenance'
+    });
+    return;
+  }
+
   var start = Date.now();
   var options = {
     host: req.params.endpoint + '.hitman.io',
