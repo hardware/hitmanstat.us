@@ -33,7 +33,7 @@ services.refresh = function() {
   // Steam
   return m.request({
     method: 'GET',
-    url: '/steam',
+    url: '/status/steam',
   })
   .then(function(result) {
     services.list.map(function(service) {
