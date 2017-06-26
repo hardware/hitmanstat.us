@@ -3,13 +3,13 @@ extends layout
 block content
   #services-container
   #elusive-container
-    img(src=elusive.url width=650 height=366)
+    img(src=elusive.url width=650 height=366 alt='elusive target')
     p Mission status : #{elusive.status}
   #misc-container
     audio(preload='metadata' id='audio-element' loop)
       source(src='http://music.meshup.net/hitman.mp3' type='audio/mpeg')
     #sound-icon
-      img(src='/images/sound.png' title='play/pause music' onclick='audioControl()')
+      img(src='/images/sound.png' title='play/pause music' onclick='audioControl()' width=48 height=48 alt='sound')
     if region == 'EU'
       #region-icon
         a(href='http://us.hitmanstat.us' title='switch region to US') US

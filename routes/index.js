@@ -18,6 +18,11 @@ router.get('/', function(req, res, next) {
 
 router.get('/status/steam', function(req, res, next) {
 
+  res.set({
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Expires': '0'
+  });
+
   var buffer = '';
   var options = {
     host: 'crowbar.steamstat.us',
@@ -40,10 +45,19 @@ router.get('/status/steam', function(req, res, next) {
 
 router.get('/status/:endpoint', function(req, res, next) {
 
+  res.set({
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Expires': '0'
+  });
+
+  var service = {
+    service:req.params.endpoint,
+    status:'down'
+  };
+
   if(process.env.HITMAN_MAINTENANCE === 'true') {
-    res.json({
-      status:'maintenance'
-    });
+    service.status = 'maintenance';
+    res.json(service);
     return;
   }
 
@@ -56,29 +70,16 @@ router.get('/status/:endpoint', function(req, res, next) {
 
   var request = https.get(options, function(response) {
     clearTimeout(reqTimeout);
-    var responseTime = Date.now() - start;
-    // 'auth' endpoint returns 403, other endpoints returns 200
-    if (response.statusCode == 200 || response.statusCode == 403) {
-      res.json({
-        status:(responseTime > 5000) ? 'warn' : 'up',
-      });
-    } else {
-      res.json({
-        status:'down'
-      });
-    }
+    if(response.statusCode === 200 || response.statusCode === 403)
+      service.status = ((Date.now() - start) > 5000) ? 'warn' : 'up';
+    res.json(service);
   }).on('error', function() {
     clearTimeout(reqTimeout);
-    if(!res.headersSent)
-      res.json({
-        status:'unknown'
-      });
+    service.status = 'unknown';
+    if(!res.headersSent) res.json(service);
   }).on('abort', function() {
-    if(!res.headersSent)
-      res.json({
-        status:'down',
-        title:'timeout'
-      });
+    service.title = 'timeout';
+    if(!res.headersSent) res.json(service);
   });
 
   var reqTimeout = setTimeout(reqTimeoutWrapper(request), 15000);
@@ -86,6 +87,8 @@ router.get('/status/:endpoint', function(req, res, next) {
 });
 
 router.get('/get/services', function(req, res, next) {
+
+  res.set('Cache-Control', 'public, max-age=2592000');
   res.json([
     { name:'auth', endpoint:'auth', platform:'azure' },
     { name:'pc', endpoint:'pc-service', platform:'azure' },
