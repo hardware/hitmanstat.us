@@ -17,7 +17,7 @@ services.view = function() {
   return m("#services", { class:"services-block" }, services.list.map(function(service) {
     return m("a", { href:"#", class: "service-block"}, [
       m("div", { class:setclass(service) }),
-      m("h1", service.name + " service"),
+      m("h1", (service.platform != 'azure') ? service.name : service.name + " service" ),
       m("h2", setState(service))
     ]);
   }));

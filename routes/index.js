@@ -1,8 +1,18 @@
 'use strict';
 
 var express = require('express');
+var http = require('http');
 var https = require('https');
 var router = express.Router();
+
+var TIMEOUT = 15000;
+var HIGHLOAD_THRESHOLD = 5000;
+
+// Disable HTTP Caching (cache prevention)
+var cacheHeaders = {
+  'Cache-Control': 'no-cache, no-store, must-revalidate',
+  'Expires': '0'
+};
 
 router.get('/', function(req, res, next) {
   res.render('index', {
@@ -16,12 +26,10 @@ router.get('/', function(req, res, next) {
   });
 });
 
+// Steam WebAPI and Connection Manager (CMs) status
 router.get('/status/steam', function(req, res, next) {
 
-  res.set({
-    'Cache-Control': 'no-cache, no-store, must-revalidate',
-    'Expires': '0'
-  });
+  res.set(cacheHeaders);
 
   var buffer = '';
   var options = {
@@ -30,25 +38,69 @@ router.get('/status/steam', function(req, res, next) {
     path: '/Barney'
   };
 
-  https.get(options, function(response) {
+  var request = https.get(options, function(response) {
     response.on('data', function (chunk) {
       buffer += chunk;
     });
     response.on('end', function() {
-      res.json(JSON.parse(buffer));
+      clearTimeout(reqTimeout);
+      if(response.headers['content-type'].indexOf('application/json') !== -1)
+        res.json(JSON.parse(buffer));
+      else
+        res.json({ success: false, status: 'unknown', title:'bad data' });
     });
   }).on('error', function() {
-    res.json({ success:false });
+    clearTimeout(reqTimeout);
+    if(!res.headersSent)
+      res.json({ success: false, status: 'unknown', title:null });
+  }).on('abort', function() {
+    if(!res.headersSent)
+      res.json({ success: false, status: 'down', title:'steamstat.us timeout' });
   });
+
+  var reqTimeout = setTimeout(reqTimeoutWrapper(request), TIMEOUT);
 
 });
 
+// www.hitmanforum.com status (only reachable with HTTP protocol)
+router.get('/status/hitmanforum', function(req, res, next) {
+
+  res.set(cacheHeaders);
+
+  var service = {
+    service:'hitmanforum',
+    status:'down'
+  };
+
+  var start = Date.now();
+  var options = {
+    host: 'www.hitmanforum.com',
+    port: 80,
+    path: '/'
+  };
+
+  var request = http.get(options, function(response) {
+    clearTimeout(reqTimeout);
+    if(response.statusCode === 200)
+      service.status = ((Date.now() - start) > HIGHLOAD_THRESHOLD) ? 'warn' : 'up';
+    res.json(service);
+  }).on('error', function() {
+    clearTimeout(reqTimeout);
+    service.status = 'unknown';
+    if(!res.headersSent) res.json(service);
+  }).on('abort', function() {
+    service.title = 'timeout';
+    if(!res.headersSent) res.json(service);
+  });
+
+  var reqTimeout = setTimeout(reqTimeoutWrapper(request), TIMEOUT);
+
+});
+
+// Hitman azure endpoints status (HTTPS)
 router.get('/status/:endpoint', function(req, res, next) {
 
-  res.set({
-    'Cache-Control': 'no-cache, no-store, must-revalidate',
-    'Expires': '0'
-  });
+  res.set(cacheHeaders);
 
   var service = {
     service:req.params.endpoint,
@@ -71,7 +123,7 @@ router.get('/status/:endpoint', function(req, res, next) {
   var request = https.get(options, function(response) {
     clearTimeout(reqTimeout);
     if(response.statusCode === 200 || response.statusCode === 403)
-      service.status = ((Date.now() - start) > 5000) ? 'warn' : 'up';
+      service.status = ((Date.now() - start) > HIGHLOAD_THRESHOLD) ? 'warn' : 'up';
     res.json(service);
   }).on('error', function() {
     clearTimeout(reqTimeout);
@@ -82,20 +134,21 @@ router.get('/status/:endpoint', function(req, res, next) {
     if(!res.headersSent) res.json(service);
   });
 
-  var reqTimeout = setTimeout(reqTimeoutWrapper(request), 15000);
+  var reqTimeout = setTimeout(reqTimeoutWrapper(request), TIMEOUT);
 
 });
 
 router.get('/get/services', function(req, res, next) {
-
   res.set('Cache-Control', 'public, max-age=2592000');
   res.json([
     { name:'auth', endpoint:'auth', platform:'azure' },
     { name:'pc', endpoint:'pc-service', platform:'azure' },
     { name:'xbox one', endpoint:'xboxone-service', platform:'azure' },
     { name:'ps4', endpoint:'ps4-service', platform:'azure' },
+    { name:'metrics', endpoint:'metrics', platform:'azure' },
     { name:'steam webapi', endpoint:'webapi', platform:'steam' },
-    { name:'steam cms', endpoint:'cms', platform:'steam' }
+    { name:'steam cms', endpoint:'cms', platform:'steam' },
+    { name:'hitmanforum.com', endpoint:'hitmanforum', platform:'discourse' }
   ]);
 });
 

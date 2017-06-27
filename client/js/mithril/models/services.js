@@ -15,9 +15,9 @@ services.loadList = (function() {
   });
 })();
 services.refresh = function() {
-  // Azure
+  // Azure and hitmanforum
   services.list.map(function(service) {
-    if(service.platform != 'azure') return;
+    if(service.platform == 'steam') return;
     return m.request({
       method: 'GET',
       url: '/status/' + service.endpoint,
@@ -38,10 +38,10 @@ services.refresh = function() {
   .then(function(result) {
     services.list.map(function(service) {
       if(service.platform != 'steam')
-        return;
+       return;
       if(!result.success) {
-        service.status = 'unknown';
-        service.title = null;
+        service.status = result.status;
+        service.title = result.title;
         return;
       }
       var status = result.services[service.endpoint].status;
@@ -54,5 +54,4 @@ services.refresh = function() {
       service.title = result.services[service.endpoint].title;
     });
   });
-
 };
