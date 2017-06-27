@@ -38,7 +38,7 @@ services.refresh = function() {
   .then(function(result) {
     services.list.map(function(service) {
       if(service.platform != 'steam')
-       return;
+        return;
       if(!result.success) {
         service.status = result.status;
         service.title = result.title;

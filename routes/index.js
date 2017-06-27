@@ -152,6 +152,11 @@ router.get('/get/services', function(req, res, next) {
   ]);
 });
 
+router.get('/robots.txt', function (req, res, next) {
+  res.type('text/plain');
+  res.send("User-Agent: *\nAllow: /");
+});
+
 var reqTimeoutWrapper = function(req) {
   return function() {
     req.abort();
