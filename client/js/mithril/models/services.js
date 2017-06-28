@@ -1,4 +1,4 @@
-/* global m */
+/* global m, errorElement */
 'use strict';
 
 var services = services || {};
@@ -15,14 +15,48 @@ services.loadList = (function() {
   });
 })();
 services.refresh = function() {
-  // Azure and hitmanforum
-  services.list.map(function(service) {
-    if(service.platform == 'steam') return;
-    return m.request({
-      method: 'GET',
-      url: '/status/' + service.endpoint,
-    })
-    .then(function(result) {
+  // --------- Azure ---------
+  m.request({
+    method: 'GET',
+    url: '/status/global',
+  })
+  .then(function(result) {
+    if(result.status == 'unavailable') {
+      errorElement.style.display = 'block';
+      errorElement.innerHTML = '<h1>All services are unavailable</h1><span></span><h2>' + result.message + '</h2><h3>Last check : ' + result.last_check + ' UTC</h3>';
+      services.list.map(function(service) {
+        if(service.platform == 'azure')
+          service.status = 'down';
+      });
+    } else {
+      errorElement.style.display = 'none';
+      errorElement.innerHTML = '';
+      services.list.map(function(service) {
+        if(service.platform == 'azure') {
+          return m.request({
+            method: 'GET',
+            url: '/status/' + service.endpoint,
+          })
+          .then(function(result) {
+            service.status = result.status;
+            if(result.title)
+              service.title = result.title;
+            else
+              service.title = (service.status == 'warn') ? 'high load' : '';
+          });
+        }
+      });
+    }
+  });
+  //  --------- Hitmanforum ---------
+  m.request({
+    method: 'GET',
+    url: '/status/hitmanforum',
+  })
+  .then(function(result) {
+    services.list.map(function(service) {
+      if(service.platform != 'discourse')
+        return;
       service.status = result.status;
       if(result.title)
         service.title = result.title;
@@ -30,8 +64,8 @@ services.refresh = function() {
         service.title = (service.status == 'warn') ? 'high load' : '';
     });
   });
-  // Steam
-  return m.request({
+  //  --------- Steam ---------
+  m.request({
     method: 'GET',
     url: '/status/steam',
   })

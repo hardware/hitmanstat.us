@@ -2,7 +2,6 @@
   width: 718px;
   padding-top: 25px;
   padding-bottom: 25px;
-
   margin: 80px auto;
   overflow: hidden;
   color: #FFF;
@@ -11,6 +10,44 @@
   background-color:rgba(255,0,0,0.3);
   border: 1px solid #FFF;
   border-radius: 5px;
+
+  span {
+    display: inline-block;
+    width: 150px;
+    height: 4px;
+    background: #be2f2f;
+    margin-bottom:10px;
+  }
+}
+
+#backend-error-container {
+  width: 718px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  display: none;
+  margin: 0 auto;
+  overflow: hidden;
+  color: #FFF;
+  font-size: 16px;
+  background-color:rgba(255,0,0,0.3);
+  border: 1px solid #FFF;
+  border-radius: 5px;
+
+  h1 {
+    font-weight: 800;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    font-weight: 600;
+    margin-bottom: 7px;
+    font-style: italic;
+  }
+
+  h3 {
+    font-size: 12px;
+  }
 
   span {
     display: inline-block;

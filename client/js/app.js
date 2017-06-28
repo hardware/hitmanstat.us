@@ -18,6 +18,7 @@ var timerView = document.getElementById('next-refresh');
  * DOM Elements
  */
 var audioElement = document.getElementById('audio-element');
+var errorElement = document.getElementById('backend-error-container');
 
 /**
  * Misc Functions

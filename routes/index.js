@@ -97,6 +97,54 @@ router.get('/status/hitmanforum', function(req, res, next) {
 
 });
 
+router.get('/status/global', function(req, res, next) {
+
+  res.set(cacheHeaders);
+
+  var service = {
+    service:'global',
+    status:'unknown'
+  };
+
+  var buffer = '';
+  var options = {
+    host:'hitman.reversing.space',
+    port:443,
+    path:'/api/status.json'
+  };
+
+  var request = https.get(options, function(response) {
+    response.on('data', function (chunk) {
+      buffer += chunk;
+    });
+    response.on('end', function() {
+      clearTimeout(reqTimeout);
+      if(response.statusCode === 200 && response.headers['content-type'].indexOf('application/json') !== -1) {
+        var result = JSON.parse(buffer);
+        if(!result.availability_msg)
+          res.json({
+            status:'available',
+            last_check:result.last_check
+          });
+        else
+          res.json({
+            status:'unavailable',
+            message:result.availability_msg,
+            last_check:result.last_check
+          });
+      } else res.json(service);
+    });
+  }).on('error', function() {
+    clearTimeout(reqTimeout);
+    if(!res.headersSent) res.json(service);
+  }).on('abort', function() {
+    if(!res.headersSent) res.json(service);
+  });
+
+  var reqTimeout = setTimeout(reqTimeoutWrapper(request), 4000);
+
+});
+
 // Hitman azure endpoints status (HTTPS)
 router.get('/status/:endpoint', function(req, res, next) {
 
