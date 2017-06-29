@@ -9,6 +9,7 @@
 
 * HITMAN™, HITMAN™ logo, musics & images are trademarks of [Io-Interactive A/S](http://www.ioi.dk/).
 * Some of design assets come from [hitmanmaps](http://hitmanmaps.com/), thanks Winterbirds (member of [hitmanforum.com](http://www.hitmanforum.com/)).
+* HITMAN™ global backend availability status provided by Swixel (member of [hitmanforum.com](http://www.hitmanforum.com/)).
 * Steam status provided by [steamstat.us](https://steamstat.us/).
 
 ## License
