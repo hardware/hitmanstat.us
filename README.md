@@ -2,8 +2,8 @@
 
 ## URLs
 
-* Europe : [http://eu.hitmanstat.us](http://eu.hitmanstat.us)
-* USA : [http://us.hitmanstat.us](http://us.hitmanstat.us)
+* Europe : [https://eu.hitmanstat.us](https://eu.hitmanstat.us)
+* USA : [https://us.hitmanstat.us](https://us.hitmanstat.us)
 
 ## Credits
 
