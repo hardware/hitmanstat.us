@@ -187,7 +187,7 @@ router.get('/status/:endpoint', function(req, res, next) {
 });
 
 router.get('/get/services', function(req, res, next) {
-  res.set('Cache-Control', 'public, max-age=2592000');
+  res.set('Cache-Control', 'public, max-age=21600');
   res.json([
     { name:'auth', endpoint:'auth', platform:'azure' },
     { name:'pc', endpoint:'pc-service', platform:'azure' },
