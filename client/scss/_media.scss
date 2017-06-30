@@ -30,4 +30,14 @@
   #elusive-container {
     display: none;
   }
+
+  #main-title {
+    margin-bottom: 40px;
+  }
+}
+
+@media (max-width: 390px) {
+  #main-title {
+    font-size: 12px;
+  }
 }

@@ -7,20 +7,20 @@
     "postinstall": "gulp"
   },
   "dependencies": {
-    "body-parser": "~1.17.1",
+    "body-parser": "~1.17.2",
     "compression": "^1.6.2",
     "cookie-parser": "~1.4.3",
-    "debug": "~2.6.3",
-    "express": "~4.15.2",
-    "morgan": "~1.8.1",
-    "pug": "~2.0.0-beta11",
-    "serve-favicon": "~2.4.2"
+    "debug": "~2.6.8",
+    "express": "~4.15.3",
+    "mithril": "^1.1.1",
+    "morgan": "~1.8.2",
+    "pug": "~2.0.0-rc.2",
+    "serve-favicon": "~2.4.3"
   },
   "devDependencies": {
     "del": "^3.0.0",
     "gulp": "^3.9.1",
-    "gulp-bower": "0.0.13",
-    "gulp-clean-css": "^3.4.2",
+    "gulp-clean-css": "^3.5.0",
     "gulp-concat": "^2.6.1",
     "gulp-filter": "^5.0.0",
     "gulp-inject": "^4.2.0",
@@ -29,9 +29,8 @@
     "gulp-rev": "^7.1.2",
     "gulp-sass": "^3.1.0",
     "gulp-uglify": "^3.0.0",
-    "jshint": "^2.9.4",
-    "jshint-stylish": "^2.2.1",
-    "run-sequence": "^1.2.2"
+    "jshint": "^2.9.5",
+    "jshint-stylish": "^2.2.1"
   },
   "engines": {
     "node": "7.x"

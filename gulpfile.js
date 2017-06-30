@@ -1,11 +1,9 @@
 var del = require('del');
 var gulp = require('gulp');
-var bower = require('gulp-bower');
 var concat = require('gulp-concat');
 var filter = require('gulp-filter');
 var rev = require('gulp-rev');
 var inject = require('gulp-inject');
-var runSequence = require('run-sequence');
 var plumber = require('gulp-plumber');
 var cssmin = require('gulp-clean-css');
 var sass = require('gulp-sass');
@@ -16,7 +14,6 @@ var jshint = require('gulp-jshint');
 // Paths
 // ----------------------------
 var path = {
-  bower: 'client/bower',
   js: 'client/js',
   sass: 'client/scss',
   npm: 'node_modules'
@@ -36,7 +33,7 @@ var files = {
   ],
 
   js: [
-    path.bower + '/mithriljs/mithril.min.js',
+    path.npm + '/mithril/mithril.min.js',
     path.js + '/app.js',
     path.js + '/mithril/models/*.js',
     path.js + '/mithril/views/*.js'
@@ -74,13 +71,7 @@ var option = {
 // ----------------------------
 // Gulp task definitions
 // ----------------------------
-gulp.task('default', function() {
-  runSequence('bower', ['inject-css', 'inject-js', 'lint']);
-});
-
-gulp.task('bower', function() {
-  return bower();
-});
+gulp.task('default', ['inject-css', 'inject-js', 'lint']);
 
 gulp.task('lint', function() {
   return gulp.src(files.jshint)
