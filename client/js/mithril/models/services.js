@@ -3,48 +3,77 @@
 
 var services = services || {};
 
-services.list = [];
+services.list = [
+  { name:'auth', platform:'azure' },
+  { name:'pc', endpoint:'pc-service.hitman.io', platform:'azure' },
+  { name:'xbox one', endpoint:'xboxone-service.hitman.io', platform:'azure' },
+  { name:'ps4', endpoint:'ps4-service.hitman.io', platform:'azure' },
+  { name:'steam webapi', endpoint:'webapi', platform:'steam' },
+  { name:'steam cms', endpoint:'cms', platform:'steam' },
+  { name:'hitmanforum.com', endpoint:'hitmanforum', platform:'discourse' }
+];
 
-services.loadList = (function() {
-  return m.request({
-    method: 'GET',
-    url: '/get/services'
-  })
-  .then(function(result) {
-    services.list = result;
-  });
-})();
 services.refresh = function() {
-  // --------- Azure ---------
+  // --------- HITMAN ---------
   m.request({
     method: 'GET',
-    url: '/status/global',
+    url: '/status/hitman',
   })
   .then(function(result) {
-    if(result.status == 'unavailable') {
+    if(result.status) {
       errorElement.style.display = 'block';
-      errorElement.innerHTML = '<h1>All services are unavailable</h1><span></span><h2>' + result.message + '</h2><h3>Last check : ' + result.last_check + ' UTC</h3>';
+      errorElement.innerHTML = '<h1>All services are unavailable</h1><span></span><h2>' + result.title + '</h2><h3>Status : ' + result.status + '</h3>';
       services.list.map(function(service) {
-        if(service.platform == 'azure')
+        if(service.platform == 'azure') {
           service.status = 'down';
+          service.title = null;
+        }
       });
     } else {
+      var lastCheck = result.timestamp;
       errorElement.style.display = 'none';
       errorElement.innerHTML = '';
       services.list.map(function(service) {
-        if(service.platform == 'azure') {
-          return m.request({
-            method: 'GET',
-            url: '/status/' + service.endpoint,
-          })
-          .then(function(result) {
-            service.status = result.status;
-            if(result.title)
-              service.title = result.title;
-            else
-              service.title = (service.status == 'warn') ? 'high load' : '';
-          });
+
+        if(service.platform != 'azure')
+          return;
+
+        if(service.name == 'auth') {
+          service.status = 'up';
+          service.lastCheck = lastCheck;
+          return;
         }
+
+        // Next maintenance
+        var nextWindow = result.services[service.endpoint].nextWindow;
+
+        // Service main status (e.g. UI_GAME_SERVICE_DOWN_MAINTENANCE)
+        switch (result.services[service.endpoint].status) {
+          case 'UI_GAME_SERVICE_DOWN_MAINTENANCE':
+            service.status = 'maintenance';
+            service.title = null;
+            service.nextWindow = (nextWindow) ? nextWindow : null;
+            service.lastCheck = lastCheck;
+            return;
+          /* case 'UI_GAME_SERVICE...':
+            service.status = '...';
+            return; */
+        }
+
+        // Service health (unknown, down, maintenance, slow, healthy)
+        var status = result.services[service.endpoint].health;
+        var map = { healthy:'up', slow:'warn' };
+        var regex = new RegExp(Object.keys(map).join("|"), "gi");
+
+        status = status.replace(regex, function(match) {
+          return map[match];
+        });
+
+        service.status = status;
+        service.title = (service.status == 'warn') ? 'high load' : '';
+        service.nextWindow = (nextWindow) ? nextWindow : null;
+        service.lastCheck = lastCheck;
+
       });
     }
   });

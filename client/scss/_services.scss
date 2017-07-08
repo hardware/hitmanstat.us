@@ -35,7 +35,7 @@
   box-shadow: 0 10px 25px #000;
   text-align: center;
   transition: all ease .25s;
-  cursor: help;
+  cursor: default;
 
   h1 {
     padding: 12px 0 3px 0;
@@ -78,6 +78,62 @@
   }
 }
 
+.help {
+  background-color: #02bdda;
+  border-radius: 16px;
+  color: #e3fbff;
+  cursor: help;
+  display: inline-block;
+  font-family: open sans,Trbuchet MS,Verdana,Arial,sans-serif;
+  font-size: 19px;
+  font-weight: bold;
+  height: 25px;
+  line-height: 25px;
+  position: relative;
+  text-align: center;
+  width: 25px;
+  margin-top: 4px;
+
+  .popover {
+    background-color: rgba(0,0,0,0.85);
+    border-radius: 5px;
+    bottom: 42px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.4);
+    color: #fff;
+    display: none;
+    font-size: 12px;
+    line-height: 15px;
+    font-family: open sans,Trbuchet MS,Verdana,Arial,sans-serif;
+    left: -108px;
+    padding: 7px 10px;
+    position: absolute;
+    width: 221px;
+    z-index: 4;
+
+    &:before {
+      border-top: 7px solid rgba(0,0,0,0.85);
+      border-right: 7px solid transparent;
+      border-left: 7px solid transparent;
+      bottom: -7px;
+      content: '';
+      display: block;
+      left: 50%;
+      margin-left: -7px;
+      position: absolute;
+    }
+  }
+
+  &:hover {
+    .popover {
+      display: block;
+      animation: fade-in .3s linear 1, move-up .3s linear 1;
+      -webkit-animation: fade-in .3s linear 1, move-up .3s linear 1;
+      -moz-animation: fade-in .3s linear 1, move-up .3s linear 1;
+      -ms-animation: fade-in .3s linear 1, move-up .3s linear 1;
+    }
+  }
+}
+
 .up {
   background-color:#61B329;
 }
@@ -92,4 +148,44 @@
 
 .unknown, .loading {
   background-color:#ccc;
+}
+
+@keyframes fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@-webkit-keyframes fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@-moz-keyframes fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@-ms-keyframes fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes move-up {
+	from { bottom: 30px; }
+	to { bottom: 42px; }
+}
+
+@-webkit-keyframes move-up {
+	from { bottom: 30px; }
+	to { bottom: 42px; }
+}
+
+@-moz-keyframes move-up {
+	from { bottom: 30px; }
+	to { bottom: 42px; }
+}
+
+@-ms-keyframes move-up {
+	from { bottom: 30px; }
+	to { bottom: 42px; }
 }

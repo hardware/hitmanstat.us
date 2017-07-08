@@ -97,20 +97,23 @@ router.get('/status/hitmanforum', function(req, res, next) {
 
 });
 
-router.get('/status/global', function(req, res, next) {
+// Hitman status
+router.get('/status/hitman', function(req, res, next) {
 
   res.set(cacheHeaders);
 
-  var service = {
-    service:'global',
-    status:'unknown'
+  var buffer = '';
+  var start = Date.now();
+
+  var options = {
+    host: 'auth.hitman.io',
+    port: 443,
+    path: '/status'
   };
 
-  var buffer = '';
-  var options = {
-    host:'hitman.reversing.space',
-    port:443,
-    path:'/api/status.json'
+  var service = {
+    status: 'Down',
+    title: null
   };
 
   var request = https.get(options, function(response) {
@@ -119,85 +122,41 @@ router.get('/status/global', function(req, res, next) {
     });
     response.on('end', function() {
       clearTimeout(reqTimeout);
-      if(response.statusCode === 200 && response.headers['content-type'].indexOf('application/json') !== -1) {
-        var result = JSON.parse(buffer);
-        if(!result.availability_msg)
-          res.json({
-            status:'available',
-            last_check:result.last_check
-          });
-        else
-          res.json({
-            status:'unavailable',
-            message:result.availability_msg,
-            last_check:result.last_check
-          });
-      } else res.json(service);
+      switch (response.statusCode) {
+        case 200:
+          if(response.headers['content-type'].indexOf('application/json') !== -1)
+            res.json(JSON.parse(buffer));
+          else {
+            service.status = 'Unknown';
+            service.title = 'Bad data returned by authentication server';
+          }
+          break;
+        case 500:
+          service.title = 'Internal authentication server error';
+          break;
+        case 502:
+        case 503:
+          service.status = 'Maintenance';
+          service.title = 'Temporary Azure backend maintenance';
+          break;
+        default:
+          service.title = 'Unknown error code returned by authentication server';
+          break;
+      }
+      if(!res.headersSent) res.json(service);
     });
-  }).on('error', function() {
+  }).on('error', function(error) {
     clearTimeout(reqTimeout);
+    service.status = 'Unknown (' + error.code + ')';
+    service.title = 'Unknown error from authentication server';
     if(!res.headersSent) res.json(service);
   }).on('abort', function() {
-    if(!res.headersSent) res.json(service);
-  });
-
-  var reqTimeout = setTimeout(reqTimeoutWrapper(request), 4000);
-
-});
-
-// Hitman azure endpoints status (HTTPS)
-router.get('/status/:endpoint', function(req, res, next) {
-
-  res.set(cacheHeaders);
-
-  var service = {
-    service:req.params.endpoint,
-    status:'down'
-  };
-
-  if(process.env.HITMAN_MAINTENANCE === 'true') {
-    service.status = 'maintenance';
-    res.json(service);
-    return;
-  }
-
-  var start = Date.now();
-  var options = {
-    host: req.params.endpoint + '.hitman.io',
-    port: 443,
-    path: '/'
-  };
-
-  var request = https.get(options, function(response) {
-    clearTimeout(reqTimeout);
-    if(response.statusCode === 200 || response.statusCode === 403)
-      service.status = ((Date.now() - start) > HIGHLOAD_THRESHOLD) ? 'warn' : 'up';
-    res.json(service);
-  }).on('error', function() {
-    clearTimeout(reqTimeout);
-    service.status = 'unknown';
-    if(!res.headersSent) res.json(service);
-  }).on('abort', function() {
-    service.title = 'timeout';
+    service.title = 'Authentication server connection timeout';
     if(!res.headersSent) res.json(service);
   });
 
   var reqTimeout = setTimeout(reqTimeoutWrapper(request), TIMEOUT);
 
-});
-
-router.get('/get/services', function(req, res, next) {
-  res.set('Cache-Control', 'public, max-age=21600');
-  res.json([
-    { name:'auth', endpoint:'auth', platform:'azure' },
-    { name:'pc', endpoint:'pc-service', platform:'azure' },
-    { name:'xbox one', endpoint:'xboxone-service', platform:'azure' },
-    { name:'ps4', endpoint:'ps4-service', platform:'azure' },
-    { name:'metrics', endpoint:'metrics', platform:'azure' },
-    { name:'steam webapi', endpoint:'webapi', platform:'steam' },
-    { name:'steam cms', endpoint:'cms', platform:'steam' },
-    { name:'hitmanforum.com', endpoint:'hitmanforum', platform:'discourse' }
-  ]);
 });
 
 router.get('/robots.txt', function (req, res, next) {
