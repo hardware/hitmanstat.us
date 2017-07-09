@@ -1,8 +1,7 @@
-/* global m, window, moment, servicesView */
+/* global m, window, moment, dateFormat, servicesView */
 'use strict';
 
 var services = services || {};
-var dateFormat = 'MMM Do YYYY hh:mmA';
 
 services.oncreate = function() {
   window.addEventListener("load", function() {
@@ -33,10 +32,6 @@ function setState(service) {
 }
 
 function setPopover(service) {
-  if(service.platform != 'azure')
-    return null;
-
-  var lastCheck = moment(service.lastCheck).format(dateFormat);
 
   if(service.nextWindow) {
     return [
@@ -45,7 +40,7 @@ function setPopover(service) {
           m('p', 'Next maintenance period :'),
           m('p', 'Start : ' + moment(service.nextWindow.start).format(dateFormat)),
           m('p', 'End : ' + moment(service.nextWindow.end).format(dateFormat)),
-          m('p', 'Last check : ' + lastCheck)
+          m('p', 'Last check : ' + service.lastCheck)
         ])
       ])
     ];
@@ -53,7 +48,7 @@ function setPopover(service) {
     return [
       m("span", { class:'help' }, [ '?',
         m("span", { class:'popover' }, [
-          m('p', 'Last check : ' + lastCheck)
+          m('p', 'Last check : ' + service.lastCheck)
         ])
       ])
     ];

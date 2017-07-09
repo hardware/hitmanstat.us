@@ -1,10 +1,12 @@
-/* global m, errorElement */
+/* global m, moment, Notify, errorElement */
 'use strict';
 
 var services = services || {};
+var dateFormat = 'MMM Do YYYY hh:mmA';
+var HitmanNotification = false;
 
 services.list = [
-  { name:'auth', platform:'azure' },
+  { name:'auth', endpoint:'auth.hitman.io', platform:'azure' },
   { name:'pc', endpoint:'pc-service.hitman.io', platform:'azure' },
   { name:'xbox one', endpoint:'xboxone-service.hitman.io', platform:'azure' },
   { name:'ps4', endpoint:'ps4-service.hitman.io', platform:'azure' },
@@ -21,18 +23,33 @@ services.refresh = function() {
   })
   .then(function(result) {
     if(result.status) {
+
+      if(!HitmanNotification) {
+        notification('Hitman services are unavailable.');
+        HitmanNotification = true;
+      }
+
       errorElement.style.display = 'block';
       errorElement.innerHTML = '<h1>All services are unavailable</h1><span></span><h2>' + result.title + '</h2><h3>Status : ' + result.status + '</h3>';
+
       services.list.map(function(service) {
         if(service.platform == 'azure') {
           service.status = 'down';
-          service.title = null;
+          service.title = '';
         }
       });
+
     } else {
-      var lastCheck = result.timestamp;
+
+      if(HitmanNotification) {
+        notification('Hitman services are back.');
+        HitmanNotification = false;
+      }
+
+      var lastCheck = moment(result.timestamp).format(dateFormat);
       errorElement.style.display = 'none';
       errorElement.innerHTML = '';
+
       services.list.map(function(service) {
 
         if(service.platform != 'azure')
@@ -51,7 +68,7 @@ services.refresh = function() {
         switch (result.services[service.endpoint].status) {
           case 'UI_GAME_SERVICE_DOWN_MAINTENANCE':
             service.status = 'maintenance';
-            service.title = null;
+            service.title = '';
             service.nextWindow = (nextWindow) ? nextWindow : null;
             service.lastCheck = lastCheck;
             return;
@@ -83,14 +100,20 @@ services.refresh = function() {
     url: '/status/hitmanforum',
   })
   .then(function(result) {
+    var lastCheck = moment().format(dateFormat);
     services.list.map(function(service) {
+
       if(service.platform != 'discourse')
         return;
+
       service.status = result.status;
+      service.lastCheck = lastCheck;
+
       if(result.title)
         service.title = result.title;
       else
         service.title = (service.status == 'warn') ? 'high load' : '';
+
     });
   });
   //  --------- Steam ---------
@@ -99,22 +122,55 @@ services.refresh = function() {
     url: '/status/steam',
   })
   .then(function(result) {
+    var lastCheck = moment().format(dateFormat);
     services.list.map(function(service) {
+
       if(service.platform != 'steam')
         return;
+
       if(!result.success) {
         service.status = result.status;
         service.title = result.title;
+        service.lastCheck = lastCheck;
         return;
       }
+
       var status = result.services[service.endpoint].status;
       var map = {good:'up', minor:'warn', major:'down'};
       var regex = new RegExp(Object.keys(map).join("|"), "gi");
+
       status = status.replace(regex, function(match){
         return map[match];
       });
+
       service.status = status;
       service.title = result.services[service.endpoint].title;
+      service.lastCheck = lastCheck;
+
     });
   });
 };
+
+function notification(message) {
+
+  var icon = null;
+
+  switch (message) {
+    case 'Hitman services are back.':
+      icon = '/images/up.jpg';
+      break;
+    case 'Hitman services are unavailable.':
+      icon = '/images/down.jpg';
+      break;
+  }
+
+  if(!Notify.needsPermission) {
+    var notification = new Notify('HITMAN Status', {
+      body:message,
+      icon:icon,
+      timeout:10
+    });
+    notification.show();
+  }
+
+}

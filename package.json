@@ -16,6 +16,7 @@
     "moment": "^2.18.1",
     "morgan": "~1.8.2",
     "newrelic": "^1.40.0",
+    "notifyjs": "^3.0.0",
     "pug": "~2.0.0-rc.2",
     "serve-favicon": "~2.4.3"
   },

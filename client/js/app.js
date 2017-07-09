@@ -1,4 +1,4 @@
-/* global document */
+/* global document, Notify */
 'use strict';
 
 var play = false;
@@ -19,6 +19,14 @@ var timerView = document.getElementById('next-refresh');
  */
 var audioElement = document.getElementById('audio-element');
 var errorElement = document.getElementById('backend-error-container');
+
+/**
+ * Notifications
+ */
+
+if(Notify.needsPermission && Notify.isSupported())  {
+  Notify.requestPermission();
+}
 
 /**
  * Misc Functions

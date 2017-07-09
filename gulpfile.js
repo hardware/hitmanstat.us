@@ -35,6 +35,7 @@ var files = {
   js: [
     path.npm + '/mithril/mithril.min.js',
     path.npm + '/moment/min/moment.min.js',
+    path.npm + '/notifyjs/dist/notify.js',
     path.js + '/app.js',
     path.js + '/mithril/models/*.js',
     path.js + '/mithril/views/*.js'
