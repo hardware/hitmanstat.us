@@ -1,4 +1,5 @@
 var express = require('express');
+var helmet = require('helmet');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -13,6 +14,20 @@ var app = express();
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+app.use(helmet({
+  hsts:false,
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", 'fonts.googleapis.com'],
+      imgSrc: ["'self'", 'images.mondedie.fr'],
+      fontSrc: ["'self'", 'fonts.gstatic.com'],
+      mediaSrc: ["'self'", 'meshup.net']
+    }
+  }
+}));
 
 app.use(logger('dev'));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
