@@ -63,15 +63,20 @@ services.refresh = function() {
 
         // Next maintenance
         var nextWindow = result.services[service.endpoint].nextWindow;
+        var state = result.services[service.endpoint].status;
 
-        // Service main status (e.g. UI_GAME_SERVICE_DOWN_MAINTENANCE)
-        switch (result.services[service.endpoint].status) {
-          case 'UI_GAME_SERVICE_DOWN_MAINTENANCE':
-            service.status = 'maintenance';
-            service.title = '';
-            service.nextWindow = (nextWindow) ? nextWindow : null;
-            service.lastCheck = lastCheck;
-            return;
+        // Service main state
+        switch (state) {
+          case 'UI_GAME_SERVICE_NOT_AVAILABLE':
+            if(!nextWindow) break;
+            // if the service is in maintenance during the next window
+            if(nextWindow.status == 'UI_GAME_SERVICE_DOWN_MAINTENANCE') {
+              service.status = 'maintenance';
+              service.title = '';
+              service.nextWindow = nextWindow;
+              service.lastCheck = lastCheck;
+              return;
+            }
           /* case 'UI_GAME_SERVICE...':
             service.status = '...';
             return; */
@@ -87,6 +92,7 @@ services.refresh = function() {
         });
 
         service.status = status;
+        service.state = (state) ? state : null;
         service.title = (service.status == 'warn') ? 'high load' : '';
         service.nextWindow = (nextWindow) ? nextWindow : null;
         service.lastCheck = lastCheck;

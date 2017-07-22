@@ -44,6 +44,15 @@ function setPopover(service) {
         ])
       ])
     ];
+  } else if(service.state) {
+    return [
+      m("span", { class:'help' }, [ '?',
+        m("span", { class:'popover' }, [
+          m('p', 'STATUS : ' + service.state),
+          m('p', 'Last check : ' + service.lastCheck)
+        ])
+      ])
+    ];
   } else {
     return [
       m("span", { class:'help' }, [ '?',

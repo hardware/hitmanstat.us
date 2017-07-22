@@ -35,7 +35,10 @@ router.get('/status/steam', function(req, res, next) {
   var options = {
     host: 'crowbar.steamstat.us',
     port: 443,
-    path: '/Barney'
+    path: '/Barney',
+    "headers": {
+      "cache-control": "no-cache",
+    }
   };
 
   var request = https.get(options, function(response) {
@@ -97,6 +100,9 @@ router.get('/status/hitmanforum', function(req, res, next) {
 
 });
 
+var timestamp = '';
+var content = '';
+
 // Hitman status
 router.get('/status/hitman', function(req, res, next) {
 
@@ -108,7 +114,10 @@ router.get('/status/hitman', function(req, res, next) {
   var options = {
     host: 'auth.hitman.io',
     port: 443,
-    path: '/status'
+    path: '/status',
+    "headers": {
+      "cache-control": "no-cache",
+    }
   };
 
   var service = {
@@ -124,9 +133,15 @@ router.get('/status/hitman', function(req, res, next) {
       clearTimeout(reqTimeout);
       switch (response.statusCode) {
         case 200:
-          if(response.headers['content-type'].indexOf('application/json') !== -1)
-            res.json(JSON.parse(buffer));
-          else {
+          if(response.headers['content-type'].indexOf('application/json') !== -1) {
+            var body = JSON.parse(buffer);
+            // keep the most recent response
+            if(body.timestamp > timestamp) {
+              timestamp = body.timestamp;
+              content = body;
+            }
+            res.json(content);
+          } else {
             service.status = 'Unknown';
             service.title = 'Bad data returned by authentication server';
           }
