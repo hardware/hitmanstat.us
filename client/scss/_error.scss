@@ -1,14 +1,12 @@
 #error-container {
-  width: 718px;
   padding-top: 25px;
   padding-bottom: 25px;
-  margin: 80px auto;
+  margin: 65px auto;
   overflow: hidden;
   color: #FFF;
   font-weight: bold;
   font-size: 30px;
   background-color:rgba(255,0,0,0.3);
-  border: 1px solid #FFF;
   border-radius: 5px;
 
   span {
@@ -21,17 +19,14 @@
 }
 
 #backend-error-container {
-  width: 718px;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: 20px;
+  padding-bottom: 20px;
   display: none;
   margin: 0 auto;
   overflow: hidden;
   color: #FFF;
   font-size: 16px;
   background-color:rgba(255,0,0,0.3);
-  border: 1px solid #FFF;
-  border-radius: 5px;
 
   h1 {
     font-weight: 800;
