@@ -23,7 +23,6 @@ var errorElement = document.getElementById('backend-error-container');
 /**
  * Notifications
  */
-
 if(Notify.needsPermission && Notify.isSupported())  {
   Notify.requestPermission();
 }
@@ -40,3 +39,5 @@ var audioControl = function() {
     play = false;
   }
 };
+
+document.getElementById("sound-icon").onclick = audioControl;

@@ -1,4 +1,4 @@
-/* global m, moment, Notify, errorElement */
+/* global m, moment, Notify, errorElement, audioElement */
 'use strict';
 
 var services = services || {};
@@ -40,6 +40,7 @@ services.refresh = function() {
     } else {
       if(HitmanNotification) {
         notification('Hitman services are back.');
+        audioElement.play();
         HitmanNotification = false;
       }
       lastCheck = moment(result.timestamp).format(dateFormat);

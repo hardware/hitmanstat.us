@@ -20,12 +20,15 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
       styleSrc: ["'self'", 'fonts.googleapis.com'],
       imgSrc: ["'self'", 'images.mondedie.fr'],
       fontSrc: ["'self'", 'fonts.gstatic.com'],
       mediaSrc: ["'self'", 'meshup.net']
     }
+  },
+  referrerPolicy: {
+    policy: 'no-referrer'
   }
 }));
 
