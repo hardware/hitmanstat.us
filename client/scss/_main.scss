@@ -86,7 +86,7 @@
 
 #elusive-container {
   height: 370px;
-  width: 654px;
+  width: 922px;
   margin: 0 auto 0;
   position: relative;
 
@@ -98,7 +98,7 @@
   }
 
   p {
-    display: none;
+    //display: none;
     font-family: Arial, sans-serif;
     z-index: 100;
     position: absolute;
@@ -108,9 +108,9 @@
     font-weight: 800;
     letter-spacing: 1px;
     text-align: left;
-    padding: 4px 0 4px 9px;
+    padding: 7px 0 7px 15px;
     left: 2px;
-    top: 297px;
+    top: 2px;
     width: 98%;
     text-align: center;
   }
