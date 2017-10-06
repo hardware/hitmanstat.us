@@ -16,11 +16,11 @@ function tack() {
     if (time.days > 0)
       content += time.days + " day" + (time.days > 1 ? "s" : "") + " ";
     if (time.days > 0 || time.hours > 0)
-      content += time.hours + " hour" + (time.hours > 1 ? "s" : "") + " ";
+      content += ('0' + time.hours).slice(-2) + " hour" + (time.hours > 1 ? "s" : "") + " ";
     if (time.days > 0 || time.hours > 0 || time.minutes > 0)
-      content += time.minutes + " minute" + (time.minutes > 1 ? "s" : "") + " ";
+      content += ('0' + time.minutes).slice(-2) + " minute" + (time.minutes > 1 ? "s" : "") + " ";
     if (time.days > 0 || time.hours > 0 || time.minutes > 0 || time.seconds > 0)
-      content += time.seconds + " second" + (time.seconds > 1 ? "s" : "");
+      content += ('0' + time.seconds).slice(-2) + " second" + (time.seconds > 1 ? "s" : "");
     else
       content = '<a href="https://www.ioi.dk/news/">https://www.ioi.dk/news/</a>';
     if(time.total <= 0)
