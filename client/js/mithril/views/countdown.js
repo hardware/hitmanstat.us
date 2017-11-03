@@ -43,4 +43,4 @@ function getRemainingTime(endtime) {
   };
 }
 
-m.mount(countdownView, countdown);
+// m.mount(countdownView, countdown);

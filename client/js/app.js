@@ -12,7 +12,7 @@ var services = services || {};
  * Views DOM anchors
  */
 var servicesView = document.getElementById('services-container');
-var countdownView = document.getElementById('countdown');
+// var countdownView = document.getElementById('countdown');
 var timerView = document.getElementById('next-refresh');
 
 /**
