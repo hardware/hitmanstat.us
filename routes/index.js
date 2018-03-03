@@ -3,6 +3,7 @@
 var express = require('express');
 var http = require('http');
 var https = require('https');
+var cloudscraper = require('cloudscraper');
 var router = express.Router();
 
 var TIMEOUT = 15000;
@@ -32,13 +33,20 @@ router.get('/status/steam', function(req, res, next) {
   res.set(cacheHeaders);
 
   var buffer = '';
+  var output = '';
   var options = {
     host: 'crowbar.steamstat.us',
     port: 443,
     path: '/Barney',
-    "headers": {
+    headers: {
       "cache-control": "no-cache",
     }
+  };
+
+  var service = {
+    success: false,
+    status: 'unknown',
+    title: null
   };
 
   var request = https.get(options, function(response) {
@@ -47,18 +55,48 @@ router.get('/status/steam', function(req, res, next) {
     });
     response.on('end', function() {
       clearTimeout(reqTimeout);
-      if(response.headers['content-type'].indexOf('application/json') !== -1)
-        res.json(JSON.parse(buffer));
-      else
-        res.json({ success: false, status: 'unknown', title:'bad data' });
+      if(response.headers['content-type'].indexOf('application/json') !== -1) {
+        try {
+          output = JSON.parse(buffer);
+        } catch (e) {
+          service.title = 'JSON Parsing Error';
+          return res.json(service);
+        }
+        res.json(output);
+      } else {
+        // if cloudflare block the request, use cloudscraper to bypass cloudflare's protection
+        cloudscraper.request({
+          method: 'GET',
+          url: 'https://' + options.host + options.path,
+          headers: options.headers
+        }, function(err, response, body) {
+          if (err) {
+            service.title = 'request error';
+            return res.json(service);
+          }
+          if(response.headers['content-type'].indexOf('application/json') === -1) {
+            service.title = 'bad data';
+            return res.json(service);
+          }
+          try {
+            output = JSON.parse(body.toString());
+          } catch (e) {
+            service.title = 'JSON Parsing Error';
+            return res.json(service);
+          }
+          res.json(output);
+        });
+      }
     });
   }).on('error', function() {
     clearTimeout(reqTimeout);
-    if(!res.headersSent)
-      res.json({ success: false, status: 'unknown', title:null });
+    if(!res.headersSent) res.json(service);
   }).on('abort', function() {
-    if(!res.headersSent)
-      res.json({ success: false, status: 'down', title:'steamstat.us timeout' });
+    if(!res.headersSent) {
+      service.status = 'down';
+      service.title = 'steamstat.us timeout';
+      res.json(service);
+    }
   });
 
   var reqTimeout = setTimeout(reqTimeoutWrapper(request), TIMEOUT);
@@ -109,13 +147,14 @@ router.get('/status/hitman', function(req, res, next) {
   res.set(cacheHeaders);
 
   var buffer = '';
+  var body = '';
   var start = Date.now();
 
   var options = {
     host: 'auth.hitman.io',
     port: 443,
     path: '/status',
-    "headers": {
+    headers: {
       "cache-control": "no-cache",
     }
   };
@@ -134,7 +173,13 @@ router.get('/status/hitman', function(req, res, next) {
       switch (response.statusCode) {
         case 200:
           if(response.headers['content-type'].indexOf('application/json') !== -1) {
-            var body = JSON.parse(buffer);
+            try {
+              body = JSON.parse(buffer);
+            } catch (e) {
+              service.status = 'Unknown';
+              service.title = 'JSON Parsing Error : Bad data returned by authentication server';
+              return res.json(service);
+            }
             // keep the most recent response
             if(body.timestamp > timestamp) {
               timestamp = body.timestamp;

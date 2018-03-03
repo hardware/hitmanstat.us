@@ -40,7 +40,6 @@ services.refresh = function() {
     } else {
       if(HitmanNotification) {
         notification('Hitman services are back.');
-        audioElement.play();
         HitmanNotification = false;
       }
       lastCheck = moment(result.timestamp).format(dateFormat);
