@@ -26,7 +26,7 @@
 
 #main-text {
   margin-top: 20px;
-  font-size: 16px;
+  font-size: 17px;
   color: #fff;
   font-weight: 500;
   line-height: 20px;
@@ -38,9 +38,10 @@
   }
 
   a {
-    padding-bottom: 3px;
+    padding-bottom: 0px;
     border-bottom: 1px solid rgba(255,255,255,0.25);
     transition: all ease .15s;
+    color: #02bdda;
 
     &:hover {
       border-bottom: 1px solid rgba(255,255,255,1);

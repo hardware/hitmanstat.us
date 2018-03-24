@@ -6,13 +6,13 @@ var dateFormat = 'MMM Do YYYY hh:mmA';
 var HitmanNotification = false;
 
 services.list = [
-  { name:'auth', endpoint:'auth.hitman.io', platform:'azure' },
-  { name:'pc', endpoint:'pc-service.hitman.io', platform:'azure' },
-  { name:'xbox one', endpoint:'xboxone-service.hitman.io', platform:'azure' },
-  { name:'ps4', endpoint:'ps4-service.hitman.io', platform:'azure' },
-  { name:'steam webapi', endpoint:'webapi', platform:'steam' },
-  { name:'steam cms', endpoint:'cms', platform:'steam' },
-  { name:'hitmanforum.com', endpoint:'hitmanforum', platform:'discourse' }
+  { name:'auth', endpoint:'auth.hitman.io', platform:'azure', url:'https://stats.hitmanstat.us/?m=5ab61a5ddc7161018d147ef0' },
+  { name:'pc', endpoint:'pc-service.hitman.io', platform:'azure', url:'https://stats.hitmanstat.us/?m=5ab61adfdc71617fbf734888' },
+  { name:'xbox one', endpoint:'xboxone-service.hitman.io', platform:'azure', url:'https://stats.hitmanstat.us/?m=5ab61affdc71617fbf73488b' },
+  { name:'ps4', endpoint:'ps4-service.hitman.io', platform:'azure', url:'https://stats.hitmanstat.us/?m=5ab61b28dc7161082a1a5c14' },
+  { name:'steam webapi', endpoint:'webapi', platform:'steam', url:'https://steamstat.us/' },
+  { name:'steam cms', endpoint:'cms', platform:'steam', url:'https://steamstat.us/' },
+  { name:'hitmanforum.com', endpoint:'hitmanforum', platform:'discourse', url:'http://www.hitmanforum.com/' }
 ];
 
 services.refresh = function() {
