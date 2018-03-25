@@ -21,7 +21,7 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'"],
-      styleSrc: ["'self'", 'fonts.googleapis.com'],
+      styleSrc: ["'self'", 'data:', 'fonts.googleapis.com'],
       imgSrc: ["'self'", 'images.mondedie.fr'],
       fontSrc: ["'self'", 'fonts.gstatic.com']
     }
