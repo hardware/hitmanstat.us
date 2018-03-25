@@ -167,7 +167,7 @@ router.get('/status/hitman', function(req, res, next) {
   // Make a first request to initialize IOI health checks (authenticated call on
   // all 3 servers, which allocates a proper session on the cluster, and check for
   // the response time. All of that takes few seconds) and a second request to get
-  // real services status.
+  // a more accurate services status.
   https.get(options, function() {
     var request = https.get(options, function(response) {
       response.on('data', function (chunk) {
@@ -222,7 +222,12 @@ router.get('/status/hitman', function(req, res, next) {
 
     var reqTimeout = setTimeout(reqTimeoutWrapper(request), TIMEOUT);
 
+  }).on('error', function(error) {
+    service.status = 'Unknown (' + error.code + ')';
+    service.title = 'Unknown error from authentication server';
+    if(!res.headersSent) res.json(service);
   });
+
 });
 
 router.get('/robots.txt', function (req, res, next) {
