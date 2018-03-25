@@ -164,59 +164,65 @@ router.get('/status/hitman', function(req, res, next) {
     title: null
   };
 
-  var request = https.get(options, function(response) {
-    response.on('data', function (chunk) {
-      buffer += chunk;
-    });
-    response.on('end', function() {
-      clearTimeout(reqTimeout);
-      switch (response.statusCode) {
-        case 200:
-          if(response.headers['content-type'].indexOf('application/json') !== -1) {
-            try {
-              body = JSON.parse(buffer);
-            } catch (e) {
+  // Make a first request to initialize IOI health checks (authenticated call on
+  // all 3 servers, which allocates a proper session on the cluster, and check for
+  // the response time. All of that takes few seconds) and a second request to get
+  // real services status.
+  https.get(options, function() {
+    var request = https.get(options, function(response) {
+      response.on('data', function (chunk) {
+        buffer += chunk;
+      });
+      response.on('end', function() {
+        clearTimeout(reqTimeout);
+        switch (response.statusCode) {
+          case 200:
+            if(response.headers['content-type'].indexOf('application/json') !== -1) {
+              try {
+                body = JSON.parse(buffer);
+              } catch (e) {
+                service.status = 'Unknown';
+                service.title = 'JSON Parsing Error : Bad data returned by authentication server';
+                return res.json(service);
+              }
+              // keep the most recent response
+              if(body.timestamp > timestamp) {
+                timestamp = body.timestamp;
+                content = body;
+              }
+              res.json(content);
+            } else {
               service.status = 'Unknown';
-              service.title = 'JSON Parsing Error : Bad data returned by authentication server';
-              return res.json(service);
+              service.title = 'Bad data returned by authentication server';
             }
-            // keep the most recent response
-            if(body.timestamp > timestamp) {
-              timestamp = body.timestamp;
-              content = body;
-            }
-            res.json(content);
-          } else {
-            service.status = 'Unknown';
-            service.title = 'Bad data returned by authentication server';
-          }
-          break;
-        case 500:
-          service.title = 'Internal authentication server error';
-          break;
-        case 502:
-        case 503:
-          service.status = 'Maintenance';
-          service.title = 'Temporary Azure backend maintenance';
-          break;
-        default:
-          service.title = 'Unknown error code returned by authentication server';
-          break;
-      }
+            break;
+          case 500:
+            service.title = 'Internal authentication server error';
+            break;
+          case 502:
+          case 503:
+            service.status = 'Maintenance';
+            service.title = 'Temporary Azure backend maintenance';
+            break;
+          default:
+            service.title = 'Unknown error code returned by authentication server';
+            break;
+        }
+        if(!res.headersSent) res.json(service);
+      });
+    }).on('error', function(error) {
+      clearTimeout(reqTimeout);
+      service.status = 'Unknown (' + error.code + ')';
+      service.title = 'Unknown error from authentication server';
+      if(!res.headersSent) res.json(service);
+    }).on('abort', function() {
+      service.title = 'Authentication server connection timeout';
       if(!res.headersSent) res.json(service);
     });
-  }).on('error', function(error) {
-    clearTimeout(reqTimeout);
-    service.status = 'Unknown (' + error.code + ')';
-    service.title = 'Unknown error from authentication server';
-    if(!res.headersSent) res.json(service);
-  }).on('abort', function() {
-    service.title = 'Authentication server connection timeout';
-    if(!res.headersSent) res.json(service);
+
+    var reqTimeout = setTimeout(reqTimeoutWrapper(request), TIMEOUT);
+
   });
-
-  var reqTimeout = setTimeout(reqTimeoutWrapper(request), TIMEOUT);
-
 });
 
 router.get('/robots.txt', function (req, res, next) {
