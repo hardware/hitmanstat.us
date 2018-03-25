@@ -4,6 +4,7 @@
 
 * Europe : [https://eu.hitmanstat.us](https://eu.hitmanstat.us)
 * USA : [https://us.hitmanstat.us](https://us.hitmanstat.us)
+* Statistics : [https://stats.hitmanstat.us](https://stats.hitmanstat.us)
 
 ## Credits
 

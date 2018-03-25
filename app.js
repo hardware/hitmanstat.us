@@ -23,8 +23,7 @@ app.use(helmet({
       scriptSrc: ["'self'"],
       styleSrc: ["'self'", 'fonts.googleapis.com'],
       imgSrc: ["'self'", 'images.mondedie.fr'],
-      fontSrc: ["'self'", 'fonts.gstatic.com'],
-      mediaSrc: ["'self'", 'meshup.net']
+      fontSrc: ["'self'", 'fonts.gstatic.com']
     }
   },
   referrerPolicy: {
