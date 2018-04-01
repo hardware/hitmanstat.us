@@ -16,6 +16,7 @@
     "mithril": "^1.1.6",
     "moment": "^2.21.0",
     "morgan": "^1.9.0",
+    "newrelic": "^3.3.0",
     "notifyjs": "^3.0.0",
     "pug": "^2.0.3",
     "serve-favicon": "^2.4.5"
