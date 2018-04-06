@@ -58,8 +58,7 @@ app.use(function(err, req, res, next) {
   res.locals.status = err.status || 500;
   res.status(res.locals.status);
   res.render('error', {
-    title: 'HITMAN Status',
-    region: process.env.REGION
+    title: 'HITMAN Status'
   });
 });
 

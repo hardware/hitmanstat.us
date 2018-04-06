@@ -19,7 +19,6 @@ router.get('/', function(req, res, next) {
   res.render('index', {
     path: req.path,
     title: 'HITMAN Status',
-    region: process.env.REGION,
     elusive:{
       url:process.env.ELUSIVE_URL,
       status:process.env.ELUSIVE_STATUS
