@@ -5,7 +5,7 @@ var content = "";
 var countdown = {
   oninit: tack,
   view: function() {
-    return m("span", (content) ? m.trust("HITMAN Definitive Edition : " + content) : "Loading countdown...");
+    return m("span", (content) ? m.trust("HITMAN Definitive Edition in " + content) : "Loading countdown...");
   }
 };
 

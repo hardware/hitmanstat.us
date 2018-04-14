@@ -32,7 +32,6 @@ function setState(service) {
 }
 
 function setPopover(service) {
-
   if(service.nextWindow) {
     return [
       m("span", { class:'help' }, [ '?',

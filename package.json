@@ -6,6 +6,7 @@
     "postinstall": "gulp"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "cloudscraper": "^1.5.0",
     "compression": "^1.7.2",
@@ -14,12 +15,12 @@
     "express": "^4.16.3",
     "helmet": "^3.12.0",
     "mithril": "^1.1.6",
-    "moment": "^2.21.0",
+    "moment": "^2.22.0",
     "morgan": "^1.9.0",
-    "newrelic": "^3.3.0",
+    "newrelic": "^4.0.0",
     "notifyjs": "^3.0.0",
     "pug": "^2.0.3",
-    "serve-favicon": "^2.4.5"
+    "serve-favicon": "^2.5.0"
   },
   "devDependencies": {
     "del": "^3.0.0",
@@ -27,11 +28,11 @@
     "gulp-clean-css": "^3.9.3",
     "gulp-concat": "^2.6.1",
     "gulp-filter": "^5.1.0",
-    "gulp-inject": "^4.3.1",
+    "gulp-inject": "^4.3.2",
     "gulp-jshint": "^2.1.0",
     "gulp-plumber": "^1.2.0",
     "gulp-rev": "^8.1.1",
-    "gulp-sass": "^3.2.1",
+    "gulp-sass": "^4.0.1",
     "gulp-uglify": "^3.0.0",
     "jshint": "^2.9.5",
     "jshint-stylish": "^2.2.1"
