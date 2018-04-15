@@ -21,9 +21,9 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'"],
-      styleSrc: ["'self'", 'fonts.googleapis.com'],
-      imgSrc: ["'self'", 'images.mondedie.fr'],
-      fontSrc: ["'self'", 'fonts.gstatic.com']
+      styleSrc: ["'self'"],
+      imgSrc: ["'self'"],
+      fontSrc: ["'self'"]
     }
   },
   referrerPolicy: {

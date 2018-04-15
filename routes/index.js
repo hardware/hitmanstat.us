@@ -18,11 +18,7 @@ router.get('/', function(req, res, next) {
   res.set('X-UA-Compatible', 'IE=edge,chrome=1');
   res.render('index', {
     path: req.path,
-    title: 'HITMAN Status',
-    elusive:{
-      url:process.env.ELUSIVE_URL,
-      status:process.env.ELUSIVE_STATUS
-    }
+    title: 'HITMAN Status'
   });
 });
 
