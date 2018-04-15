@@ -19,11 +19,16 @@ app.use(helmet({
   hsts:false,
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'self'"],
+      defaultSrc: ["'none'"],
       scriptSrc: ["'self'"],
       styleSrc: ["'self'"],
       imgSrc: ["'self'"],
-      fontSrc: ["'self'"]
+      fontSrc: ["'self'"],
+      mediaSrc: ["'self'"],
+      connectSrc: ["'self'"],
+      baseUri: ["'none'"],
+      formAction: ["'none'"],
+      frameAncestors: ["'none'"]
     }
   },
   referrerPolicy: {
