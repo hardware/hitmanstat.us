@@ -21,7 +21,7 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'"],
-      styleSrc: ["'self'", 'data:', 'fonts.googleapis.com'],
+      styleSrc: ["'self'", 'fonts.googleapis.com'],
       imgSrc: ["'self'", 'images.mondedie.fr'],
       fontSrc: ["'self'", 'fonts.gstatic.com']
     }
@@ -39,7 +39,7 @@ app.use(cookieParser());
 app.use(compression());
 
 function setHeaders(res, path, stat) {
-  res.setHeader('Cache-Control', 'private');
+  res.setHeader('Cache-Control', 'public');
   res.setHeader('Expires', new Date(Date.now() + ms('30d')).toUTCString());
 }
 

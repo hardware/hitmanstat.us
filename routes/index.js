@@ -15,6 +15,7 @@ var cacheHeaders = {
 };
 
 router.get('/', function(req, res, next) {
+  res.set('X-UA-Compatible', 'IE=edge,chrome=1');
   res.render('index', {
     path: req.path,
     title: 'HITMAN Status',
