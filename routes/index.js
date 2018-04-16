@@ -3,10 +3,19 @@
 var express = require('express');
 var axios = require('axios');
 var cloudscraper = require('cloudscraper');
+var moment = require('moment');
 var router = express.Router();
 
+// CONSTANTS
 var TIMEOUT = 15000;
 var HIGHLOAD_THRESHOLD = 5000;
+var NEW_RELIC_EVENT_TYPE = "ServiceStatus";
+
+// State preserved server-side variables
+var initialTime = moment().subtract(1, 'm');
+var steamLastRequestTimestamp = 0;
+var hitmanLastRequestTimestamp = '';
+var hitmanLastRequestContent = '';
 
 // Disable HTTP Caching (cache prevention)
 var cacheHeaders = {
@@ -45,10 +54,21 @@ router.get('/status/steam', function(req, res, next) {
     title: null
   };
 
+  var events = [
+    { eventType:NEW_RELIC_EVENT_TYPE, service:"STEAM WEBAPI", status:"unknow" },
+    { eventType:NEW_RELIC_EVENT_TYPE, service:"STEAM CMS", status:"unknown" }
+  ];
+
   axios.request(options).then(function(response) {
-    if(response.headers['content-type'].indexOf('application/json') !== -1)
+    if(response.headers['content-type'].indexOf('application/json') !== -1) {
+      if(response.data.time > steamLastRequestTimestamp) {
+        steamLastRequestTimestamp = response.data.time;
+        events[0].status = formatServiceStatus(response.data.services.webapi.status, 'steam');
+        events[1].status = formatServiceStatus(response.data.services.cms.status, 'steam');
+        submitEvents(events);
+      }
       res.json(response.data);
-    else {
+    } else {
       // if cloudflare block the request, use cloudscraper to bypass cloudflare's protection
       cloudscraper.request({
         method: 'GET',
@@ -68,6 +88,12 @@ router.get('/status/steam', function(req, res, next) {
         } catch (e) {
           service.title = 'JSON Parsing Error';
           return res.json(service);
+        }
+        if(output.time > steamLastRequestTimestamp) {
+          steamLastRequestTimestamp = output.time;
+          events[0].status = formatServiceStatus(output.services.webapi.status, 'steam');
+          events[1].status = formatServiceStatus(output.services.cms.status, 'steam');
+          submitEvents(events);
         }
         res.json(output);
       });
@@ -122,9 +148,6 @@ router.get('/status/hitmanforum', function(req, res, next) {
 
 });
 
-var timestamp = '';
-var content = '';
-
 // Hitman status
 router.get('/status/hitman', function(req, res, next) {
 
@@ -147,6 +170,13 @@ router.get('/status/hitman', function(req, res, next) {
     title: null
   };
 
+  var events = [
+    { eventType:NEW_RELIC_EVENT_TYPE, service:"HITMAN AUTHENTICATION", status:"down" },
+    { eventType:NEW_RELIC_EVENT_TYPE, service:"HITMAN PC", status:"down" },
+    { eventType:NEW_RELIC_EVENT_TYPE, service:"HITMAN XboxOne", status:"down" },
+    { eventType:NEW_RELIC_EVENT_TYPE, service:"HITMAN PS4", status:"down" }
+  ];
+
   // Make a first request to initialize IOI health checks (authenticated call on
   // all 3 servers, which allocates a proper session on the cluster, and check for
   // the response time. All of that takes few seconds) and a second request to get
@@ -156,16 +186,24 @@ router.get('/status/hitman', function(req, res, next) {
   }).then(function(response) {
     if(response.headers['content-type'].indexOf('application/json') !== -1) {
       body = response.data;
-      // keep the most recent response
-      if(body.timestamp > timestamp) {
-        timestamp = body.timestamp;
-        content = body;
+      // If hitman server sends a more recent response
+      if(body.timestamp > hitmanLastRequestTimestamp) {
+        // store the response
+        hitmanLastRequestTimestamp = body.timestamp;
+        hitmanLastRequestContent = body;
+        // send the new status of hitman services to new relic
+        events[0].status = "up";
+        events[1].status = formatServiceStatus(hitmanLastRequestContent.services['pc-service.hitman.io'].health, 'hitman');
+        events[2].status = formatServiceStatus(hitmanLastRequestContent.services['xboxone-service.hitman.io'].health, 'hitman');
+        events[3].status = formatServiceStatus(hitmanLastRequestContent.services['ps4-service.hitman.io'].health, 'hitman');
+        submitEvents(events);
       }
-      res.json(content);
+      res.json(hitmanLastRequestContent);
     } else {
       service.status = 'Unknown';
       service.title = 'Bad data returned by authentication server';
       res.json(service);
+      submitEvents(events, true);
     }
   }).catch(function (error) {
     if (error.response) {
@@ -190,6 +228,7 @@ router.get('/status/hitman', function(req, res, next) {
       service.title = 'Unknown error from authentication server';
     }
     if(!res.headersSent) res.json(service);
+    submitEvents(events, true);
   });
 
 });
@@ -198,5 +237,51 @@ router.get('/robots.txt', function (req, res, next) {
   res.type('text/plain');
   res.send("User-Agent: *\nAllow: /");
 });
+
+function formatServiceStatus(status, type) {
+  var map = null;
+  switch (type) {
+    case 'hitman':
+      map = { healthy:'up', slow:'high load' };
+      break;
+    case 'steam':
+      map = { good:'up', minor:'high load', major:'down' };
+      break;
+  }
+  var regex = new RegExp(Object.keys(map).join("|"), "gi");
+  var output = status.replace(regex, function(match) {
+    return map[match];
+  });
+  return output;
+}
+
+// Submit custom events to NewRelic Insights
+// Send down events only once a minute to avoid event flood
+function submitEvents(events, down) {
+
+  if(down) {
+    if(!moment().isAfter(moment(initialTime.toISOString()).add(1, 'm')))
+      return;
+    else
+      initialTime = moment();
+  }
+
+  axios.request({
+    url: 'https://insights-collector.newrelic.com/v1/accounts/' + process.env.NEW_RELIC_ACCOUNT + '/events',
+    method: 'post',
+    headers: {
+      'X-Insert-Key': process.env.NEW_RELIC_API_KEY,
+      'Content-Type': 'application/json'
+    },
+    data: events
+  }).catch(function (error) {
+    if (error.response) {
+      console.log("Failed to submit data to new relic. Error " + error.response.status + " : " + error.response.data.error);
+    } else {
+      console.log("Failed to submit data to new relic. Error " + error.code + " : " + error.message);
+    }
+  });
+
+}
 
 module.exports = router;
