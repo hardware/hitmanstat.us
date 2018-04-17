@@ -271,21 +271,23 @@ function submitEvents(events, down) {
   for (var index = 0; index < events.length; index++)
     if(events[index].status != 'up') noUpEvents.push(events[index]);
 
-  axios.request({
-    url: 'https://insights-collector.newrelic.com/v1/accounts/' + process.env.NEW_RELIC_ACCOUNT + '/events',
-    method: 'post',
-    headers: {
-      'X-Insert-Key': process.env.NEW_RELIC_API_KEY,
-      'Content-Type': 'application/json'
-    },
-    data: noUpEvents
-  }).catch(function (error) {
-    if (error.response) {
-      console.log("Failed to submit data to new relic. Error " + error.response.status + " : " + error.response.data.error);
-    } else {
-      console.log("Failed to submit data to new relic. Error " + error.code + " : " + error.message);
-    }
-  });
+  if (noUpEvents.length > 0) {
+    axios.request({
+      url: 'https://insights-collector.newrelic.com/v1/accounts/' + process.env.NEW_RELIC_ACCOUNT + '/events',
+      method: 'post',
+      headers: {
+        'X-Insert-Key': process.env.NEW_RELIC_API_KEY,
+        'Content-Type': 'application/json'
+      },
+      data: noUpEvents
+    }).catch(function (error) {
+      if (error.response) {
+        console.log("Failed to submit data to new relic. Error " + error.response.status + " : " + error.response.data.error);
+      } else {
+        console.log("Failed to submit data to new relic. Error " + error.code + " : " + error.message);
+      }
+    });
+  }
 
 }
 
