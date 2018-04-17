@@ -259,12 +259,17 @@ function formatServiceStatus(status, type) {
 // Send down events only once a minute to avoid event flood
 function submitEvents(events, down) {
 
+  var noUpEvents = [];
+
   if(down) {
     if(!moment().isAfter(moment(initialTime.toISOString()).add(1, 'm')))
       return;
     else
       initialTime = moment();
   }
+
+  for (var index = 0; index < events.length; index++)
+    if(events[index].status != 'up') noUpEvents.push(events[index]);
 
   axios.request({
     url: 'https://insights-collector.newrelic.com/v1/accounts/' + process.env.NEW_RELIC_ACCOUNT + '/events',
@@ -273,7 +278,7 @@ function submitEvents(events, down) {
       'X-Insert-Key': process.env.NEW_RELIC_API_KEY,
       'Content-Type': 'application/json'
     },
-    data: events
+    data: noUpEvents
   }).catch(function (error) {
     if (error.response) {
       console.log("Failed to submit data to new relic. Error " + error.response.status + " : " + error.response.data.error);
