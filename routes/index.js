@@ -1,6 +1,7 @@
 'use strict';
 
 var express = require('express');
+var debug = require('debug')('hitmanstat.us:app');
 var axios = require('axios');
 var throttleAdapterEnhancer = require('axios-extensions').throttleAdapterEnhancer;
 var cloudscraper = require('cloudscraper');
@@ -29,9 +30,16 @@ var uaCompatible = {
   'X-UA-Compatible': 'IE=edge,chrome=1'
 };
 
-// Make requests throttled (threshold = 60 seconds)
-var http = axios.create({
+// Make requests throttled with a threshold equal to 60 seconds
+// Used by '/events' and '/status/hitmanforum' routes
+var httpMediumThrottle = axios.create({
 	adapter: throttleAdapterEnhancer(axios.defaults.adapter, 60 * 1000)
+});
+
+// Make requests throttled with a threshold equal to 30 seconds
+// Used by '/status/steam' and '/status/hitman' routes
+var httpHighThrottle = axios.create({
+	adapter: throttleAdapterEnhancer(axios.defaults.adapter, 30 * 1000)
 });
 
 router.get('/', function(req, res, next) {
@@ -57,7 +65,7 @@ router.get('/events', function(req, res, next) {
     }
   };
 
-  http.request(options).then(function(response) {
+  httpMediumThrottle.request(options).then(function(response) {
     res.render('events', {
       path: req.path,
       title: 'HITMAN Status',
@@ -107,9 +115,10 @@ router.get('/status/steam', function(req, res, next) {
     { eventType:NEW_RELIC_EVENT_TYPE, service:"STEAM CMS", status:"unknown" }
   ];
 
-  axios.request(options).then(function(response) {
+  httpHighThrottle.request(options).then(function(response) {
     if(response.headers['content-type'].indexOf('application/json') !== -1) {
       if(response.data.time > steamLastRequestTimestamp) {
+        debug('New data received from steamstat.us');
         steamLastRequestTimestamp = response.data.time;
         events[0].status = formatServiceStatus(response.data.services.webapi.status, 'steam');
         events[1].status = formatServiceStatus(response.data.services.cms.status, 'steam');
@@ -118,6 +127,7 @@ router.get('/status/steam', function(req, res, next) {
       res.json(response.data);
     } else {
       // if cloudflare block the request, use cloudscraper to bypass cloudflare's protection
+      debug('HTTP request denied by cloudflare');
       cloudscraper.request({
         method: 'GET',
         url: options.url,
@@ -138,6 +148,7 @@ router.get('/status/steam', function(req, res, next) {
           return res.json(service);
         }
         if(output.time > steamLastRequestTimestamp) {
+          debug('New data received from steamstat.us');
           steamLastRequestTimestamp = output.time;
           events[0].status = formatServiceStatus(output.services.webapi.status, 'steam');
           events[1].status = formatServiceStatus(output.services.cms.status, 'steam');
@@ -181,7 +192,7 @@ router.get('/status/hitmanforum', function(req, res, next) {
 
   var start = Date.now();
 
-  axios.request(options).then(function(response) {
+  httpMediumThrottle.request(options).then(function(response) {
     service.status = ((Date.now() - start) > HIGHLOAD_THRESHOLD) ? 'warn' : 'up';
     res.json(service);
   }).catch(function (error) {
@@ -225,17 +236,12 @@ router.get('/status/hitman', function(req, res, next) {
     { eventType:NEW_RELIC_EVENT_TYPE, service:"HITMAN PS4", status:"down" }
   ];
 
-  // Make a first request to initialize IOI health checks (authenticated call on
-  // all 3 servers, which allocates a proper session on the cluster, and check for
-  // the response time. All of that takes few seconds) and a second request to get
-  // a more accurate services status.
-  axios.request(options).then(function() {
-    return axios.request(options);
-  }).then(function(response) {
+  httpHighThrottle.request(options).then(function(response) {
     if(response.headers['content-type'].indexOf('application/json') !== -1) {
       body = response.data;
       // If hitman server sends a more recent response
       if(body.timestamp > hitmanLastRequestTimestamp) {
+        debug('New data received from auth.hitman.io');
         // store the response
         hitmanLastRequestTimestamp = body.timestamp;
         hitmanLastRequestContent = body;
@@ -307,6 +313,7 @@ function formatServiceStatus(status, type) {
 // Send down events only once a minute to avoid event flood
 function submitEvents(events, down) {
 
+  debug('A submission request to new relic has been initiated (%d events)', events.length);
   var noUpEvents = [];
 
   if(down) {
@@ -316,10 +323,12 @@ function submitEvents(events, down) {
       initialTime = moment();
   }
 
+  debug('Request granted');
   for (var index = 0; index < events.length; index++)
     if(events[index].status != 'up' && events[index].status != 'high load') noUpEvents.push(events[index]);
 
   if (noUpEvents.length > 0) {
+    debug('Sending %d events', noUpEvents.length);
     axios.request({
       url: 'https://insights-collector.newrelic.com/v1/accounts/' + process.env.NEW_RELIC_ACCOUNT + '/events',
       method: 'post',
@@ -330,12 +339,12 @@ function submitEvents(events, down) {
       data: noUpEvents
     }).catch(function (error) {
       if (error.response) {
-        console.log("Failed to submit data to new relic. Error " + error.response.status + " : " + error.response.data.error);
+        console.error("Failed to submit data to new relic. Error " + error.response.status + " : " + error.response.data.error);
       } else {
-        console.log("Failed to submit data to new relic. Error " + error.code + " : " + error.message);
+        console.error("Failed to submit data to new relic. Error " + error.code + " : " + error.message);
       }
     });
-  }
+  } else debug("No event sent, only 'up' or 'high load' events have been received");
 
 }
 
