@@ -1,6 +1,6 @@
 #main-page {
   background: url(/images/main_bg.jpg) repeat #0d0e10;
-  background-size: cover;
+  background-size: contain;
 }
 
 #main-header {
@@ -114,5 +114,40 @@
     top: 276px;
     width: 98%;
     text-align: center;
+  }
+}
+
+#stats-container {
+  width: 80%;
+  margin: 0 auto 40px;
+  position: relative;
+  background-color: rgba(255,255,255,0.87);
+  font-size: 13px;
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    padding: 15px;
+
+    th {
+      width: 25%;
+      font-size: 15px;
+      color:#4b4a4a;
+    }
+
+    td, th {
+      border: 1px solid #d3d3d3;
+      padding: 10px;
+      text-align: left;
+    }
+
+    tr:nth-child(even) {
+      background-color: #d3d3d3;
+    }
+
+    .no-event {
+      text-align: center;
+      font-size: 15px;
+    }
   }
 }

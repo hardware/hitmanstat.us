@@ -1,7 +1,7 @@
 #error-container {
   padding-top: 25px;
   padding-bottom: 25px;
-  margin: 65px auto;
+  margin: 30px auto;
   overflow: hidden;
   color: #FFF;
   font-weight: 700;
@@ -11,10 +11,18 @@
 
   span {
     display: inline-block;
-    width: 150px;
+    width: 200px;
     height: 4px;
     background: #be2f2f;
     margin-bottom:10px;
+  }
+
+  p {
+    font-size: 20px;
+  }
+
+  .small {
+    font-size: 14px;
   }
 }
 

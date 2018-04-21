@@ -2,6 +2,7 @@
 
 var express = require('express');
 var axios = require('axios');
+var throttleAdapterEnhancer = require('axios-extensions').throttleAdapterEnhancer;
 var cloudscraper = require('cloudscraper');
 var moment = require('moment');
 var router = express.Router();
@@ -9,7 +10,7 @@ var router = express.Router();
 // CONSTANTS
 var TIMEOUT = 15000;
 var HIGHLOAD_THRESHOLD = 5000;
-var NEW_RELIC_EVENT_TYPE = "ServiceStatus";
+var NEW_RELIC_EVENT_TYPE = "ServiceStatusProduction";
 
 // State preserved server-side variables
 var initialTime = moment().subtract(1, 'm');
@@ -23,12 +24,59 @@ var cacheHeaders = {
   'Expires': '0'
 };
 
+// Internet Explorer compatibility mode
+var uaCompatible = {
+  'X-UA-Compatible': 'IE=edge,chrome=1'
+};
+
+// Make requests throttled (threshold = 60 seconds)
+var http = axios.create({
+	adapter: throttleAdapterEnhancer(axios.defaults.adapter, 60 * 1000)
+});
+
 router.get('/', function(req, res, next) {
-  res.set('X-UA-Compatible', 'IE=edge,chrome=1');
+  res.set(uaCompatible);
   res.render('index', {
     path: req.path,
     title: 'HITMAN Status'
   });
+});
+
+router.get('/events', function(req, res, next) {
+
+  res.set(uaCompatible);
+
+  var options = {
+    url: 'https://insights-api.newrelic.com/v1/accounts/' + process.env.NEW_RELIC_ACCOUNT + '/query?nrql=SELECT%20service%2C%20status%20FROM%20' + NEW_RELIC_EVENT_TYPE + '%20WHERE%20status%20NOT%20LIKE%20%27up%27%20AND%20status%20NOT%20LIKE%20%27high%20load%27%20SINCE%201%20month%20ago%20LIMIT%20200',
+    headers: {
+      'Accept': 'application/json',
+      'X-Query-Key' : process.env.NEW_RELIC_API_QUERY_KEY,
+    },
+    validateStatus: function (status) {
+      return status === 200;
+    }
+  };
+
+  http.request(options).then(function(response) {
+    res.render('events', {
+      path: req.path,
+      title: 'HITMAN Status',
+      events: response.data.results[0].events,
+      moment: moment
+    });
+  }).catch(function (error) {
+    if (error.response) {
+      res.locals.status = error.response.status;
+      res.locals.message = error.response.data.error;
+    } else {
+      res.locals.status = error.code;
+      res.locals.message = error.message;
+    }
+    res.render('error', {
+      title: 'HITMAN Status'
+    });
+  });
+
 });
 
 // Steam WebAPI and Connection Manager (CMs) status
@@ -269,14 +317,14 @@ function submitEvents(events, down) {
   }
 
   for (var index = 0; index < events.length; index++)
-    if(events[index].status != 'up') noUpEvents.push(events[index]);
+    if(events[index].status != 'up' && events[index].status != 'high load') noUpEvents.push(events[index]);
 
   if (noUpEvents.length > 0) {
     axios.request({
       url: 'https://insights-collector.newrelic.com/v1/accounts/' + process.env.NEW_RELIC_ACCOUNT + '/events',
       method: 'post',
       headers: {
-        'X-Insert-Key': process.env.NEW_RELIC_API_KEY,
+        'X-Insert-Key': process.env.NEW_RELIC_API_INSERT_KEY,
         'Content-Type': 'application/json'
       },
       data: noUpEvents

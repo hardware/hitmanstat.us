@@ -7,17 +7,19 @@ header#main-header
       |
       | Status
     img(id='main-logo' src='/images/logo.png' width='476' height='80' alt='logo')
-  #main-text
-    | Next update in
-    |
-    span#next-refresh ?
-    |
-    | seconds.
-    br
-    | More stats on
-    |
-    a(href='https://events.hitmanstat.us' target='_blank') events.hitmanstat.us
-    |
-    | and
-    |
-    a(href='https://stats.hitmanstat.us' target='_blank') stats.hitmanstat.us
+
+  if path == '/'
+    #main-text
+      | Next update in
+      |
+      span#next-refresh ?
+      |
+      | seconds.
+      br
+      | More stats on
+      |
+      a(href='https://events.hitmanstat.us' target='_blank') events.hitmanstat.us
+      |
+      | and
+      |
+      a(href='https://stats.hitmanstat.us' target='_blank') stats.hitmanstat.us

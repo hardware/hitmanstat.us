@@ -24,6 +24,10 @@
   dependencies:
     "@types/babel-types" "*"
 
+"@types/lru-cache@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.npmjs.org/@types/lru-cache/-/lru-cache-4.1.0.tgz#ef69ce9c3ebb46bd146f0d80f0c1ce38b0508eae"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.npmjs.org/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -256,7 +260,16 @@ aws4@^1.2.1, aws4@^1.6.0:
   version "1.7.0"
   resolved "https://registry.npmjs.org/aws4/-/aws4-1.7.0.tgz#d4d0e9b9dbfca77bf08eeb0a8a471550fe39e289"
 
-axios@^0.18.0:
+axios-extensions@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/axios-extensions/-/axios-extensions-2.0.2.tgz#02dd941fa3de1c1f28a7a5fc0c7b1e170d844ca5"
+  dependencies:
+    "@types/lru-cache" "^4.1.0"
+    axios "*"
+    babel-runtime "^6.26.0"
+    lru-cache "^4.1.1"
+
+axios@*, axios@^0.18.0:
   version "0.18.0"
   resolved "https://registry.npmjs.org/axios/-/axios-0.18.0.tgz#32d53e4851efdc0a11993b6cd000789d70c05102"
   dependencies:
@@ -2263,7 +2276,7 @@ lru-cache@2:
   version "2.7.3"
   resolved "https://registry.npmjs.org/lru-cache/-/lru-cache-2.7.3.tgz#6d4524e8b955f95d4f5b58851ce21dd72fb4e952"
 
-lru-cache@^4.0.1:
+lru-cache@^4.0.1, lru-cache@^4.1.1:
   version "4.1.2"
   resolved "https://registry.npmjs.org/lru-cache/-/lru-cache-4.1.2.tgz#45234b2e6e2f2b33da125624c4664929a0224c3f"
   dependencies:

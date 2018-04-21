@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  #error-container
+    p LATEST DOWN OR MAINTENANCE EVENTS REPORTED
+    span
+    p.small Since 1 month ago
+  #stats-container
+    table
+      tr
+        th Date
+        th Relative Time
+        th Service
+        th Status
+      if events
+        if events.length > 0
+          each event in events
+            tr
+              td=moment(event.timestamp).format('MMMM DD, YYYY HH:mm A')
+              td=moment(event.timestamp).fromNow()
+              td=event.service
+              td=event.status
+        else
+          tr
+            td(class="no-event" colspan='4') No event occurred.
+      else
+        tr
+          td(class="no-event" colspan='4') Error : no data found

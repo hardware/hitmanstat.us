@@ -16,6 +16,10 @@
   #services {
     width: 670px;
   }
+
+  #stats-container {
+    width: 100%;
+  }
 }
 
 @media (max-width: 670px) {
@@ -34,10 +38,17 @@
   #main-title {
     margin-bottom: 40px;
   }
+
+  #stats-container {
+    width: 100%;
+  }
 }
 
 @media (max-width: 420px) {
   #main-title span {
     display: none;
+  }
+  #stats-container {
+    width: 100%;
   }
 }
