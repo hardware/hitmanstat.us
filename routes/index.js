@@ -11,13 +11,18 @@ var router = express.Router();
 // CONSTANTS
 var TIMEOUT = 15000;
 var HIGHLOAD_THRESHOLD = 5000;
-var NEW_RELIC_EVENT_TYPE = "ServiceStatusProduction";
+var NEW_RELIC_EVENT_TYPE = process.env.NEW_RELIC_EVENT_TYPE;
 
 // State preserved server-side variables
 var initialTime = moment().subtract(1, 'm');
 var steamLastRequestTimestamp = 0;
 var hitmanLastRequestTimestamp = '';
 var hitmanLastRequestContent = '';
+
+// Down counters
+var steamDownCounter = 0;
+var hitmanDownCounter = 0;
+var hitmanForumDownCounter = 0;
 
 // Disable HTTP Caching (cache prevention)
 var cacheHeaders = {
@@ -41,6 +46,10 @@ var httpMediumThrottle = axios.create({
 var httpHighThrottle = axios.create({
 	adapter: throttleAdapterEnhancer(axios.defaults.adapter, 30 * 1000)
 });
+
+String.prototype.startsWith = function(str) {
+  return (this.indexOf(str) === 0);
+};
 
 router.get('/', function(req, res, next) {
   res.set(uaCompatible);
@@ -179,10 +188,7 @@ router.get('/status/hitmanforum', function(req, res, next) {
       function () {
         return null;
       }
-    ],
-    validateStatus: function (status) {
-      return status === 200;
-    }
+    ]
   };
 
   var service = {
@@ -196,13 +202,12 @@ router.get('/status/hitmanforum', function(req, res, next) {
     service.status = ((Date.now() - start) > HIGHLOAD_THRESHOLD) ? 'warn' : 'up';
     res.json(service);
   }).catch(function (error) {
-    if (error.response)
-      service.status = 'down';
-    else if (error.code === 'ECONNABORTED')
+    if (error.code === 'ECONNABORTED')
       service.title = 'timeout';
-    else
-      service.status = 'unknown';
     if(!res.headersSent) res.json(service);
+    submitEvents([
+      { eventType:NEW_RELIC_EVENT_TYPE, service:"HITMAN FORUM", status:service.status }
+    ]);
   });
 
 });
@@ -257,7 +262,7 @@ router.get('/status/hitman', function(req, res, next) {
       service.status = 'Unknown';
       service.title = 'Bad data returned by authentication server';
       res.json(service);
-      submitEvents(events, true);
+      submitEvents(events);
     }
   }).catch(function (error) {
     if (error.response) {
@@ -282,7 +287,7 @@ router.get('/status/hitman', function(req, res, next) {
       service.title = 'Unknown error from authentication server';
     }
     if(!res.headersSent) res.json(service);
-    submitEvents(events, true);
+    submitEvents(events);
   });
 
 });
@@ -310,24 +315,51 @@ function formatServiceStatus(status, type) {
 }
 
 // Submit custom events to NewRelic Insights
-// Send down events only once a minute to avoid event flood
-function submitEvents(events, down) {
+function submitEvents(events) {
 
-  debug('A submission request to new relic has been initiated (%d events)', events.length);
+  debug('A submission request to new relic has been initiated (%d event(s))', events.length);
+
   var noUpEvents = [];
+  var downCounter = 0;
+  var type = "";
 
-  if(down) {
-    if(!moment().isAfter(moment(initialTime.toISOString()).add(1, 'm')))
-      return;
-    else
-      initialTime = moment();
+  if(events[0].service.startsWith('STEAM')) {
+    type = "STEAM";
+    downCounter = steamDownCounter;
+  } else if(events[0].service == 'HITMAN FORUM') {
+    type = "HMF";
+    downCounter = hitmanForumDownCounter;
+  } else {
+    type = "HITMAN";
+    downCounter = hitmanDownCounter;
   }
 
-  debug('Request granted');
+  // Exclude up and high load status
   for (var index = 0; index < events.length; index++)
     if(events[index].status != 'up' && events[index].status != 'high load') noUpEvents.push(events[index]);
 
+  // If one or more services are not available
   if (noUpEvents.length > 0) {
+    if(downCounter === 0)
+      downCounter++;
+    else if(downCounter > 1)
+      downCounter = downCounter * 2;
+    if(!moment().isAfter(moment(initialTime.toISOString()).add(downCounter, 'm')))
+      return;
+    else {
+      initialTime = moment();
+      switch (type) {
+        case "STEAM":
+          steamDownCounter++;
+          break;
+        case "HMF":
+          hitmanForumDownCounter++;
+          break;
+        case "HITMAN":
+          hitmanDownCounter++;
+          break;
+      }
+    }
     debug('Sending %d events', noUpEvents.length);
     axios.request({
       url: 'https://insights-collector.newrelic.com/v1/accounts/' + process.env.NEW_RELIC_ACCOUNT + '/events',
@@ -344,7 +376,20 @@ function submitEvents(events, down) {
         console.error("Failed to submit data to new relic. Error " + error.code + " : " + error.message);
       }
     });
-  } else debug("No event sent, only 'up' or 'high load' events have been received");
+  } else {
+    debug("No event sent. Service type '%s' seems available, only 'up' or 'high load' events have been received", type);
+    switch (type) {
+      case "STEAM":
+        steamDownCounter = 0;
+        break;
+      case "HMF":
+        hitmanForumDownCounter = 0;
+        break;
+      case "HITMAN":
+        hitmanDownCounter = 0;
+        break;
+    }
+  }
 
 }
 
