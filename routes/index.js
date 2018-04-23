@@ -9,7 +9,7 @@ var moment = require('moment');
 var router = express.Router();
 
 // CONSTANTS
-var TIMEOUT = 15000;
+var TIMEOUT = 25000;
 var HIGHLOAD_THRESHOLD = 5000;
 var NEW_RELIC_EVENT_TYPE = process.env.NEW_RELIC_EVENT_TYPE;
 
