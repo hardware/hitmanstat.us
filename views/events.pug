@@ -16,8 +16,8 @@ block content
         if events.length > 0
           each event in events
             tr
-              td=moment(event.timestamp).format('MMMM DD, YYYY HH:mm A') + ' GMT'
-              td=moment(event.timestamp).fromNow()
+              td=moment(event.date).format('MMMM DD, YYYY HH:mm A')
+              td=moment(event.date).fromNow()
               td=event.service
               td=event.status
         else

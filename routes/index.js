@@ -1,6 +1,7 @@
 'use strict';
 
 var express = require('express');
+var pgp = require('pg-promise')();
 var debug = require('debug')('hitmanstat.us:app');
 var axios = require('axios');
 var throttleAdapterEnhancer = require('axios-extensions').throttleAdapterEnhancer;
@@ -8,10 +9,14 @@ var cloudscraper = require('cloudscraper');
 var moment = require('moment');
 var router = express.Router();
 
+pgp.pg.defaults.ssl = true;
+var db = pgp(process.env.DATABASE_URL);
+var tn = new pgp.helpers.TableName(process.env.DATABASE_TABLE, 'public');
+var cs = new pgp.helpers.ColumnSet(['service', 'status'], { table:tn });
+
 // CONSTANTS
 var TIMEOUT = 25000;
 var HIGHLOAD_THRESHOLD = 5000;
-var NEW_RELIC_EVENT_TYPE = process.env.NEW_RELIC_EVENT_TYPE;
 
 // State preserved server-side variables
 var initialTime = moment().subtract(1, 'm');
@@ -63,32 +68,20 @@ router.get('/events', function(req, res, next) {
 
   res.set(uaCompatible);
 
-  var options = {
-    url: 'https://insights-api.newrelic.com/v1/accounts/' + process.env.NEW_RELIC_ACCOUNT + '/query?nrql=SELECT%20service%2C%20status%20FROM%20' + NEW_RELIC_EVENT_TYPE + '%20WHERE%20status%20NOT%20LIKE%20%27up%27%20AND%20status%20NOT%20LIKE%20%27high%20load%27%20SINCE%201%20month%20ago%20LIMIT%20200',
-    headers: {
-      'Accept': 'application/json',
-      'X-Query-Key' : process.env.NEW_RELIC_API_QUERY_KEY,
-    },
-    validateStatus: function (status) {
-      return status === 200;
-    }
-  };
+  var query = pgp.as.format("SELECT * FROM $1 WHERE date > NOW() - INTERVAL '30 days' ORDER BY id DESC LIMIT 300", tn);
 
-  httpMediumThrottle.request(options).then(function(response) {
+  db.any(query)
+  .then(function(data) {
     res.render('events', {
       path: req.path,
       title: 'HITMAN Status',
-      events: response.data.results[0].events,
+      events: data,
       moment: moment
     });
-  }).catch(function (error) {
-    if (error.response) {
-      res.locals.status = error.response.status;
-      res.locals.message = error.response.data.error;
-    } else {
-      res.locals.status = error.code;
-      res.locals.message = error.message;
-    }
+  })
+  .catch(function(error) {
+    res.locals.status = error.routine;
+    res.locals.message = error;
     res.render('error', {
       title: 'HITMAN Status'
     });
@@ -120,8 +113,8 @@ router.get('/status/steam', function(req, res, next) {
   };
 
   var events = [
-    { eventType:NEW_RELIC_EVENT_TYPE, service:"STEAM WEBAPI", status:"unknow" },
-    { eventType:NEW_RELIC_EVENT_TYPE, service:"STEAM CMS", status:"unknown" }
+    { service:"STEAM WEBAPI", status:"unknow" },
+    { service:"STEAM CMS", status:"unknown" }
   ];
 
   httpHighThrottle.request(options).then(function(response) {
@@ -206,7 +199,7 @@ router.get('/status/hitmanforum', function(req, res, next) {
       service.title = 'timeout';
     if(!res.headersSent) res.json(service);
     submitEvents([
-      { eventType:NEW_RELIC_EVENT_TYPE, service:"HITMAN FORUM", status:service.status }
+      { service:"HITMAN FORUM", status:service.status }
     ]);
   });
 
@@ -235,10 +228,10 @@ router.get('/status/hitman', function(req, res, next) {
   };
 
   var events = [
-    { eventType:NEW_RELIC_EVENT_TYPE, service:"HITMAN AUTHENTICATION", status:"down" },
-    { eventType:NEW_RELIC_EVENT_TYPE, service:"HITMAN PC", status:"down" },
-    { eventType:NEW_RELIC_EVENT_TYPE, service:"HITMAN XboxOne", status:"down" },
-    { eventType:NEW_RELIC_EVENT_TYPE, service:"HITMAN PS4", status:"down" }
+    { service:"HITMAN AUTHENTICATION", status:"down" },
+    { service:"HITMAN PC", status:"down" },
+    { service:"HITMAN XboxOne", status:"down" },
+    { service:"HITMAN PS4", status:"down" }
   ];
 
   httpHighThrottle.request(options).then(function(response) {
@@ -250,7 +243,7 @@ router.get('/status/hitman', function(req, res, next) {
         // store the response
         hitmanLastRequestTimestamp = body.timestamp;
         hitmanLastRequestContent = body;
-        // send the new status of hitman services to new relic
+        // send the new status of hitman services
         events[0].status = "up";
         events[1].status = formatServiceStatus(hitmanLastRequestContent.services['pc-service.hitman.io'].health, 'hitman');
         events[2].status = formatServiceStatus(hitmanLastRequestContent.services['xboxone-service.hitman.io'].health, 'hitman');
@@ -314,10 +307,10 @@ function formatServiceStatus(status, type) {
   return output;
 }
 
-// Submit custom events to NewRelic Insights
+// Submit events to database
 function submitEvents(events) {
 
-  debug('A submission request to new relic has been initiated (%d event(s))', events.length);
+  debug('A submission request to database has been initiated (%d event(s))', events.length);
 
   var noUpEvents = [];
   var downCounter = 0;
@@ -361,20 +354,9 @@ function submitEvents(events) {
       }
     }
     debug('Sending %d events', noUpEvents.length);
-    axios.request({
-      url: 'https://insights-collector.newrelic.com/v1/accounts/' + process.env.NEW_RELIC_ACCOUNT + '/events',
-      method: 'post',
-      headers: {
-        'X-Insert-Key': process.env.NEW_RELIC_API_INSERT_KEY,
-        'Content-Type': 'application/json'
-      },
-      data: noUpEvents
-    }).catch(function (error) {
-      if (error.response) {
-        console.error("Failed to submit data to new relic. Error " + error.response.status + " : " + error.response.data.error);
-      } else {
-        console.error("Failed to submit data to new relic. Error " + error.code + " : " + error.message);
-      }
+    var query = pgp.helpers.insert(noUpEvents, cs);
+    db.none(query).catch(function(error) {
+      console.error("Failed to submit data to database. Routine " + error.routine + " " + error);
     });
   } else {
     debug("No event sent. Service type '%s' seems available, only 'up' or 'high load' events have been received", type);
