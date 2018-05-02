@@ -255,7 +255,7 @@ router.get('/status/hitman', function(req, res, next) {
       service.status = 'Unknown';
       service.title = 'Bad data returned by authentication server';
       res.json(service);
-      submitEvents(events);
+      submitEvents([events[0]]);
     }
   }).catch(function (error) {
     if (error.response) {
@@ -280,7 +280,7 @@ router.get('/status/hitman', function(req, res, next) {
       service.title = 'Unknown error from authentication server';
     }
     if(!res.headersSent) res.json(service);
-    submitEvents(events);
+    submitEvents([events[0]]);
   });
 
 });
