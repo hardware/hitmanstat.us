@@ -149,5 +149,16 @@
       text-align: center;
       font-size: 15px;
     }
+
+    .separator {
+      font-weight: bold;
+      color: #e7e7e7;
+      border-bottom: 2px solid rgb(156, 0, 0);
+      border-left: 1px solid #6d6c6c;
+      border-right: 1px solid #6d6c6c;
+      background-color: #6d6c6c;
+      text-align: center;
+      font-size: 15px;
+    }
   }
 }

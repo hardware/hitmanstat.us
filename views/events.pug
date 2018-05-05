@@ -15,14 +15,19 @@ block content
       if events
         if events.length > 0
           each event in events
+            - var date = moment(event.date), sdate = date.format('dddd, MMMM DD, YYYY')
+            if lastDate != sdate
+              tr
+                td(class='separator' colspan='4')=sdate
             tr
-              td=moment(event.date).format('MMMM DD, YYYY HH:mm A') + ' GMT'
-              td=moment(event.date).fromNow()
+              td=date.format('MMMM DD, YYYY HH:mm A') + ' GMT'
+              td=date.fromNow()
               td=event.service
               td=event.status
+            - lastDate = sdate
         else
           tr
-            td(class="no-event" colspan='4') No event occurred.
+            td(class='no-event' colspan='4') No event occurred.
       else
         tr
-          td(class="no-event" colspan='4') Error : no data found
+          td(class='no-event' colspan='4') Error : no data found
