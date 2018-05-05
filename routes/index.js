@@ -119,7 +119,7 @@ router.get('/status/steam', function(req, res, next) {
 
   httpHighThrottle.request(options).then(function(response) {
     if(response.headers['content-type'].indexOf('application/json') !== -1) {
-      if(response.data.time > steamLastRequestTimestamp) {
+      if(moment(response.data.time).isAfter(steamLastRequestTimestamp)) {
         debug('New data received from steamstat.us');
         steamLastRequestTimestamp = response.data.time;
         events[0].status = formatServiceStatus(response.data.services.webapi.status, 'steam');
@@ -149,7 +149,7 @@ router.get('/status/steam', function(req, res, next) {
           service.title = 'JSON Parsing Error';
           return res.json(service);
         }
-        if(output.time > steamLastRequestTimestamp) {
+        if(moment(output.time).isAfter(steamLastRequestTimestamp)) {
           debug('New data received from steamstat.us');
           steamLastRequestTimestamp = output.time;
           events[0].status = formatServiceStatus(output.services.webapi.status, 'steam');
@@ -238,7 +238,7 @@ router.get('/status/hitman', function(req, res, next) {
     if(response.headers['content-type'].indexOf('application/json') !== -1) {
       body = response.data;
       // If hitman server sends a more recent response
-      if(body.timestamp > hitmanLastRequestTimestamp) {
+      if(moment(body.timestamp).isAfter(hitmanLastRequestTimestamp) || !hitmanLastRequestTimestamp) {
         debug('New data received from auth.hitman.io');
         // store the response
         hitmanLastRequestTimestamp = body.timestamp;
@@ -350,10 +350,16 @@ function submitEvents(events) {
           break;
         case "HITMAN":
           hitmanDownCounter++;
+          var maintenanceMode = true;
+          for (index = 0; index < noUpEvents.length; index++)
+            if(noUpEvents[index].status != 'maintenance')
+              maintenanceMode = false;
+          if(maintenanceMode)
+            noUpEvents = [{ service:"HITMAN PC / Xbox One / PS4", status:"maintenance" }];
           break;
       }
     }
-    debug('Sending %d events', noUpEvents.length);
+    debug('Sending %d event(s)', noUpEvents.length);
     var query = pgp.helpers.insert(noUpEvents, cs);
     db.none(query).catch(function(error) {
       console.error("Failed to submit data to database. Routine " + error.routine + " " + error);
