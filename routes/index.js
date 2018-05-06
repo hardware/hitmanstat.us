@@ -169,13 +169,13 @@ router.get('/status/steam', function(req, res, next) {
 
 });
 
-// www.hitmanforum.com status (only reachable with HTTP protocol)
+// www.hitmanforum.com status
 router.get('/status/hitmanforum', function(req, res, next) {
 
   res.set(cacheHeaders);
 
   var options = {
-    url: 'http://www.hitmanforum.com',
+    url: 'https://www.hitmanforum.com',
     timeout: TIMEOUT,
     transformResponse: [
       function () {
