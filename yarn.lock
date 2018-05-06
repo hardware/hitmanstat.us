@@ -236,14 +236,14 @@ aws4@^1.2.1, aws4@^1.6.0:
   version "1.7.0"
   resolved "https://registry.npmjs.org/aws4/-/aws4-1.7.0.tgz#d4d0e9b9dbfca77bf08eeb0a8a471550fe39e289"
 
-axios-extensions@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.npmjs.org/axios-extensions/-/axios-extensions-2.0.2.tgz#02dd941fa3de1c1f28a7a5fc0c7b1e170d844ca5"
+axios-extensions@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.npmjs.org/axios-extensions/-/axios-extensions-3.0.2.tgz#bac9abd723ccdbfd638b7aa618d41c1a98384e38"
   dependencies:
     "@types/lru-cache" "^4.1.0"
     axios "*"
-    babel-runtime "^6.26.0"
     lru-cache "^4.1.1"
+    tslib "^1.9.0"
 
 axios@*, axios@^0.18.0:
   version "0.18.0"
@@ -1353,9 +1353,9 @@ group-array@^0.3.0:
     split-string "^1.0.1"
     union-value "^0.2.3"
 
-gulp-clean-css@^3.9.3:
-  version "3.9.3"
-  resolved "https://registry.npmjs.org/gulp-clean-css/-/gulp-clean-css-3.9.3.tgz#47bf7ad62f44970f86e4ac4bdeed68ad904e65c5"
+gulp-clean-css@^3.9.4:
+  version "3.9.4"
+  resolved "https://registry.npmjs.org/gulp-clean-css/-/gulp-clean-css-3.9.4.tgz#c6d3f8bb7a600fbe661962a72348a330954d343b"
   dependencies:
     clean-css "4.1.11"
     plugin-error "1.0.1"
@@ -2382,9 +2382,9 @@ modify-filename@^1.0.0, modify-filename@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/modify-filename/-/modify-filename-1.1.0.tgz#9a2dec83806fbb2d975f22beec859ca26b393aa1"
 
-moment@^2.22.0:
-  version "2.22.0"
-  resolved "https://registry.npmjs.org/moment/-/moment-2.22.0.tgz#7921ade01017dd45186e7fee5f424f0b8663a730"
+moment@^2.22.1:
+  version "2.22.1"
+  resolved "https://registry.npmjs.org/moment/-/moment-2.22.1.tgz#529a2e9bf973f259c9643d237fda84de3a26e8ad"
 
 morgan@^1.9.0:
   version "1.9.0"
@@ -2725,9 +2725,9 @@ pg-pool@~2.0.3:
   version "2.0.3"
   resolved "https://registry.npmjs.org/pg-pool/-/pg-pool-2.0.3.tgz#c022032c8949f312a4f91fb6409ce04076be3257"
 
-pg-promise@^8.4.0:
-  version "8.4.0"
-  resolved "https://registry.npmjs.org/pg-promise/-/pg-promise-8.4.0.tgz#8efde596c39c53c958e27f9aafd85d7f87249f65"
+pg-promise@^8.4.2:
+  version "8.4.2"
+  resolved "https://registry.npmjs.org/pg-promise/-/pg-promise-8.4.2.tgz#283d63ed430efd661d8b78fe6751d77789e83f8d"
   dependencies:
     manakin "0.5.1"
     pg "7.4.1"
@@ -3680,6 +3680,10 @@ trim-newlines@^1.0.0:
   resolved "https://registry.npmjs.org/true-case-path/-/true-case-path-1.0.2.tgz#7ec91130924766c7f573be3020c34f8fdfd00d62"
   dependencies:
     glob "^6.0.4"
+
+tslib@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.npmjs.org/tslib/-/tslib-1.9.0.tgz#e37a86fda8cbbaf23a057f473c9f4dc64e5fc2e8"
 
 tunnel-agent@^0.6.0:
   version "0.6.0"

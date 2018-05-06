@@ -43,13 +43,13 @@ var uaCompatible = {
 // Make requests throttled with a threshold equal to 60 seconds
 // Used by '/events' and '/status/hitmanforum' routes
 var httpMediumThrottle = axios.create({
-	adapter: throttleAdapterEnhancer(axios.defaults.adapter, 60 * 1000)
+	adapter: throttleAdapterEnhancer(axios.defaults.adapter, { threshold: 60 * 1000 })
 });
 
 // Make requests throttled with a threshold equal to 30 seconds
 // Used by '/status/steam' and '/status/hitman' routes
 var httpHighThrottle = axios.create({
-	adapter: throttleAdapterEnhancer(axios.defaults.adapter, 30 * 1000)
+	adapter: throttleAdapterEnhancer(axios.defaults.adapter, { threshold: 30 * 1000 })
 });
 
 String.prototype.startsWith = function(str) {
