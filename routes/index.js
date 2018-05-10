@@ -68,7 +68,8 @@ router.get('/events', function(req, res, next) {
 
   res.set(uaCompatible);
 
-  var query = pgp.as.format("SELECT * FROM $1 WHERE date > NOW() - INTERVAL '30 days' ORDER BY id DESC LIMIT 300", tn);
+  var days = (!isNaN(parseInt(req.query.days)) && req.query.days.length <= 3) ? Math.abs(req.query.days) : 7 ;
+  var query = pgp.as.format("SELECT * FROM $1 WHERE date > NOW() - INTERVAL '$2# days' ORDER BY id DESC LIMIT 300", [tn, days]);
 
   db.any(query)
   .then(function(data) {
@@ -76,7 +77,8 @@ router.get('/events', function(req, res, next) {
       path: req.path,
       title: 'HITMAN Status',
       events: data,
-      moment: moment
+      moment: moment,
+      days: days
     });
   })
   .catch(function(error) {

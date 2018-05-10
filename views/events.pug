@@ -4,7 +4,11 @@ block content
   #error-container
     p LATEST DOWN OR MAINTENANCE EVENTS REPORTED
     span
-    p.small Since 1 month ago
+    p.small Since #{days} days ago | &nbsp;
+      if days == 30
+        a(href="/events") Show last week
+      else
+        a(href="/events?days=30") Show last month
   #stats-container
     table
       tr
