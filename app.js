@@ -23,9 +23,11 @@ app.use(helmet({
       scriptSrc: ["'self'"],
       styleSrc: ["'self'"],
       imgSrc: ["'self'"],
+      frameSrc: ["'self'","https://www.youtube.com"],
       fontSrc: ["'self'"],
       mediaSrc: ["'self'"],
       connectSrc: ["'self'"],
+      manifestSrc: ["'self'"],
       baseUri: ["'none'"],
       formAction: ["'none'"],
       frameAncestors: ["'none'"]
