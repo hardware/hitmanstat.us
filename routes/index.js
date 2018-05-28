@@ -352,12 +352,14 @@ function submitEvents(events) {
           break;
         case "HITMAN":
           hitmanDownCounter++;
-          var maintenanceMode = true;
-          for (index = 0; index < noUpEvents.length; index++)
-            if(noUpEvents[index].status != 'maintenance')
-              maintenanceMode = false;
-          if(maintenanceMode)
-            noUpEvents = [{ service:"HITMAN PC / Xbox One / PS4", status:"maintenance" }];
+          if(noUpEvents.length > 2) {
+            var maintenanceMode = true;
+            for (index = 0; index < noUpEvents.length; index++)
+              if(noUpEvents[index].status != 'maintenance')
+                maintenanceMode = false;
+            if(maintenanceMode)
+              noUpEvents = [{ service:"HITMAN PC / Xbox One / PS4", status:"maintenance" }];
+          }
           break;
       }
     }
