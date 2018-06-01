@@ -23,7 +23,7 @@ app.use(helmet({
       scriptSrc: ["'self'"],
       styleSrc: ["'self'"],
       imgSrc: ["'self'"],
-      frameSrc: ["'self'","https://www.youtube.com"],
+      frameSrc: ["'self'"],
       fontSrc: ["'self'"],
       mediaSrc: ["'self'"],
       connectSrc: ["'self'"],
