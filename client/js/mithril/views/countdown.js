@@ -12,7 +12,7 @@ var countdown = {
 function tack() {
   var timeinterval = setInterval(function() {
     content = "";
-    var time = getRemainingTime("May 15 2018 00:00:00 GMT+0100");
+    var time = getRemainingTime("June 7 2018 19:00:00 GMT+0200");
     if (time.days > 0)
       content += time.days + " day" + (time.days > 1 ? "s" : "") + " ";
     if (time.days > 0 || time.hours > 0)
@@ -22,7 +22,7 @@ function tack() {
     if (time.days > 0 || time.hours > 0 || time.minutes > 0 || time.seconds > 0)
       content += ('0' + time.seconds).slice(-2) + " second" + (time.seconds > 1 ? "s" : "");
     else
-      content = '<a href="https://www.ioi.dk/20-years-of-ioi/">https://www.ioi.dk/20-years-of-ioi/</a>';
+      content = '<a href="http://live.wbgames.com/">Live reveal : http://live.wbgames.com/</a>';
     if(time.total <= 0)
       clearInterval(timeinterval);
   }, 1000);
