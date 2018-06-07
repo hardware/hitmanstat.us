@@ -233,7 +233,10 @@ router.get('/status/hitman', function(req, res, next) {
     { service:"HITMAN AUTHENTICATION", status:"down" },
     { service:"HITMAN PC", status:"down" },
     { service:"HITMAN XboxOne", status:"down" },
-    { service:"HITMAN PS4", status:"down" }
+    { service:"HITMAN PS4", status:"down" },
+    { service:"HITMAN SNIPER ASSASSIN PC", status:"down" },
+    { service:"HITMAN SNIPER ASSASSIN XboxOne", status:"down" },
+    { service:"HITMAN SNIPER ASSASSIN PS4", status:"down" }
   ];
 
   httpHighThrottle.request(options).then(function(response) {
@@ -250,6 +253,9 @@ router.get('/status/hitman', function(req, res, next) {
         events[1].status = formatServiceStatus(hitmanLastRequestContent.services['pc-service.hitman.io'].health, 'hitman');
         events[2].status = formatServiceStatus(hitmanLastRequestContent.services['xboxone-service.hitman.io'].health, 'hitman');
         events[3].status = formatServiceStatus(hitmanLastRequestContent.services['ps4-service.hitman.io'].health, 'hitman');
+        events[4].status = formatServiceStatus(hitmanLastRequestContent.services['scpc-service.hitman.io'].health, 'hitman');
+        events[5].status = formatServiceStatus(hitmanLastRequestContent.services['scxboxone-service.hitman.io'].health, 'hitman');
+        events[6].status = formatServiceStatus(hitmanLastRequestContent.services['scps4-service.hitman.io'].health, 'hitman');
         submitEvents(events);
       }
       res.json(hitmanLastRequestContent);
@@ -353,11 +359,11 @@ function submitEvents(events) {
         case "HITMAN":
           hitmanDownCounter++;
           if(noUpEvents.length > 2) {
-            var maintenanceMode = true;
+            var maintenanceMode = 0;
             for (index = 0; index < noUpEvents.length; index++)
-              if(noUpEvents[index].status != 'maintenance')
-                maintenanceMode = false;
-            if(maintenanceMode)
+              if(noUpEvents[index].status == 'maintenance')
+                maintenanceMode++;
+            if(maintenanceMode >= 3)
               noUpEvents = [{ service:"HITMAN PC / Xbox One / PS4", status:"maintenance" }];
           }
           break;
