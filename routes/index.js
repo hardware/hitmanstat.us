@@ -15,7 +15,7 @@ var tn = new pgp.helpers.TableName(process.env.DATABASE_TABLE, 'public');
 var cs = new pgp.helpers.ColumnSet(['service', 'status'], { table:tn });
 
 // CONSTANTS
-var TIMEOUT = 25000;
+var TIMEOUT = 20000;
 var HIGHLOAD_THRESHOLD = 5000;
 
 // State preserved server-side variables
