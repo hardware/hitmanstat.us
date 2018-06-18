@@ -12,7 +12,7 @@ var countdown = {
 function tack() {
   var timeinterval = setInterval(function() {
     content = "";
-    var time = getRemainingTime("June 7 2018 19:00:00 GMT+0200");
+    var time = getRemainingTime("Nov 13 2018 00:00:00 GMT+0100");
     if (time.days > 0)
       content += time.days + " day" + (time.days > 1 ? "s" : "") + " ";
     if (time.days > 0 || time.hours > 0)

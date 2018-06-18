@@ -107,17 +107,20 @@
     //display: none;
     z-index: 100;
     position: absolute;
-    background-color:rgba(71, 71, 71, 0.7);
+    background-color:rgba(54, 2, 25, 0.4);
     color: #FFF;
     font-size: 16px;
     font-weight: 700;
     letter-spacing: 1px;
     text-align: left;
     padding: 4px 0 4px 9px;
+    margin: 0 0 0 52px;
     left: 2px;
-    top: 288px;
-    width: 98%;
+    top: 229px;
+    width: 82%;
     text-align: center;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
   }
 }
 
