@@ -363,8 +363,12 @@ function submitEvents(events) {
             for (index = 0; index < noUpEvents.length; index++)
               if(noUpEvents[index].status == 'maintenance')
                 maintenanceMode++;
-            if(maintenanceMode >= 3)
-              noUpEvents = [{ service:"HITMAN PC / Xbox One / PS4", status:"maintenance" }];
+            if(maintenanceMode >= 3) {
+              if(noUpEvents[0].service.startsWith('HITMAN SNIPER ASSASSIN'))
+                noUpEvents = [{ service:"HITMAN SNIPER ASSASSIN PC / Xbox One / PS4", status:"maintenance" }];
+              else
+                noUpEvents = [{ service:"HITMAN PC / Xbox One / PS4", status:"maintenance" }];
+            }
           }
           break;
       }
