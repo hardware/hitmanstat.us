@@ -1,6 +1,9 @@
 #main-page {
-  background: url(/images/main_bg.jpg) repeat #0d0e10;
-  background-size: contain;
+  background-image: url(/images/grid.png), url(/images/bg.jpg);
+  background-size: auto,cover;
+  background-color: #121421;
+  background-position: top;
+  background-repeat: repeat,no-repeat;
 }
 
 #main-header {
@@ -64,6 +67,10 @@
     border: 2px solid #CCC;
     border-radius: 5px;
     cursor: pointer;
+
+    &:hover {
+      border: 2px solid #ff0068;
+    }
   }
 }
 
@@ -100,7 +107,11 @@
     position: absolute;
     left: 0;
     top: 0;
-    border: 2px solid #FFF
+    border: 1px solid #FFF;
+
+    &:hover {
+      border: 1px solid #ff0068;
+    }
   }
 
   p {
@@ -160,7 +171,7 @@
     .separator {
       font-weight: bold;
       color: #e7e7e7;
-      border-bottom: 2px solid rgb(156, 0, 0);
+      border-bottom: 2px solid #02bdda;
       border-left: 1px solid #6d6c6c;
       border-right: 1px solid #6d6c6c;
       background-color: #6d6c6c;

@@ -3,6 +3,9 @@
   text-align: center;
   overflow: hidden;
   width: 100%;
+  border-top: 1px solid #ff0068;
+  margin-top: 42px;
+  background: #3e2b41 url(/images/angle-pattern-purple.png);
 }
 
 #footer {
@@ -18,7 +21,7 @@
     padding: 15px 20px 15px 55px;
     margin: 20px;
     border-radius: 4px;
-    border: 2px solid #c6c6c6;
+    border: 1px solid #c6c6c6;
     color: #fff;
     font-size: 14px;
     font-weight: 700;
@@ -27,7 +30,7 @@
     cursor: pointer;
 
     &:hover {
-      border: 2px solid #dcdfe3;
+      border: 1px solid #ff0068;
     }
   }
 
@@ -48,11 +51,13 @@
 }
 
 #footer-text {
-  margin: 0 0 15px 0;
+  margin: 0 auto;
   font-size: 12px;
   font-weight: 700;
   color: #fff;
   line-height: 18px;
+  width: 510px;
+  padding-bottom: 15px;
 
   a:hover {
     text-decoration: underline;

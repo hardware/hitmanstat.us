@@ -22,6 +22,18 @@
   }
 }
 
+@media (max-width: 780px) {
+  #footer-links {
+    a {
+      margin: 10px;
+    }
+  }
+
+  #footer {
+    padding-top:8px;
+  }
+}
+
 @media (max-width: 670px) {
   #services-container {
     width:330px;
@@ -42,6 +54,35 @@
   #stats-container {
     width: 100%;
   }
+
+  #footer-links {
+    a {
+      margin: 10px;
+    }
+  }
+
+  #footer {
+    padding-top:8px;
+  }
+
+}
+
+@media (max-width: 535px) {
+  #footer-text {
+    width: 420px;
+  }
+}
+
+@media (max-width: 471px) {
+  #footer-links {
+    margin: 15px 0;
+
+    a {
+      width: 85%;
+      border: 1px solid #3e2b41;
+      margin: 0;
+    }
+  }
 }
 
 @media (max-width: 420px) {
@@ -50,5 +91,8 @@
   }
   #stats-container {
     width: 100%;
+  }
+  #footer-text {
+    width: 320px;
   }
 }

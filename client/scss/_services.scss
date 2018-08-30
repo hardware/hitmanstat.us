@@ -30,9 +30,8 @@
   height: 92px;
   background: #fff;
   border-radius: 5px;
-  border-top-left-radius: 7px;
-  border-top-right-radius: 7px;
-  box-shadow: 0 10px 25px #000;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   text-align: center;
   transition: all ease .25s;
 
@@ -40,7 +39,7 @@
     padding: 12px 0 3px 0;
     font-size: 16px;
     font-weight: 800;
-    color: #202328;
+    color: #5a405f;
     text-transform: uppercase;
     transition: all ease .25s;
   }
@@ -94,7 +93,7 @@
   margin-top: 4px;
 
   .popover {
-    background-color: rgba(0,0,0,0.85);
+    background-color: rgba(90,64,95,0.90);
     border-radius: 5px;
     bottom: 42px;
     box-shadow: 0 0 5px rgba(0,0,0,0.4);

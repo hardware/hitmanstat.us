@@ -32,7 +32,7 @@ services.refresh = function() {
         HitmanNotification = true;
       }
       errorElement.style.display = 'block';
-      errorElement.innerHTML = '<h1>All services are unavailable</h1><span></span><h2>' + result.title + '</h2><h3>Status : ' + result.status + '</h3>';
+      errorElement.innerHTML = '<h1>All hitman services are unavailable</h1><span></span><h2>' + result.title + '</h2><h3>Status : ' + result.status + '</h3>';
       services.list.map(function(service) {
         if(service.platform == 'azure') {
           service.status = 'down';
