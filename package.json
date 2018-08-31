@@ -14,19 +14,19 @@
     "cookie-parser": "^1.4.3",
     "debug": "^3.1.0",
     "express": "^4.16.3",
-    "helmet": "^3.12.2",
+    "helmet": "^3.13.0",
     "mithril": "^1.1.6",
     "moment": "^2.22.2",
     "morgan": "^1.9.0",
     "notifyjs": "^3.0.0",
-    "pg-promise": "^8.4.5",
+    "pg-promise": "^8.4.6",
     "pug": "^2.0.3",
     "serve-favicon": "^2.5.0"
   },
   "devDependencies": {
     "del": "^3.0.0",
     "gulp": "^3.9.1",
-    "gulp-clean-css": "^3.9.4",
+    "gulp-clean-css": "^3.10.0",
     "gulp-concat": "^2.6.1",
     "gulp-filter": "^5.1.0",
     "gulp-inject": "^4.3.2",
@@ -34,8 +34,8 @@
     "gulp-plumber": "^1.2.0",
     "gulp-rev": "^8.1.1",
     "gulp-sass": "^4.0.1",
-    "gulp-uglify": "^3.0.0",
-    "jshint": "^2.9.5",
+    "gulp-uglify": "^3.0.1",
+    "jshint": "^2.9.6",
     "jshint-stylish": "^2.2.1"
   }
 }
