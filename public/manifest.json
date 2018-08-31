@@ -1,5 +1,6 @@
 {
     "name": "HITMAN Status",
+    "short_name": "HITMAN Stat",
     "icons": [
         {
             "src": "/android-chrome-192x192.png?v=3",
