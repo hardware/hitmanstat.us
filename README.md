@@ -3,7 +3,7 @@
 ## URLs
 
 * Realtime status : [https://hitmanstat.us](https://hitmanstat.us)
-* Statistics : [https://stats.hitmanstat.us](https://stats.hitmanstat.us)
+* Events history : [https://events.hitmanstat.us](https://events.hitmanstat.us)
 
 ## Credits
 
