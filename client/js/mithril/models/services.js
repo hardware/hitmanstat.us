@@ -6,13 +6,13 @@ var dateFormat = 'MMM Do YYYY hh:mmA';
 var HitmanNotification = false;
 
 services.list = [
-  { name:'hitman authentication', endpoint:'auth.hitman.io', platform:'azure', url:'https://stats.hitmanstat.us/?m=5ab61a5ddc7161018d147ef0' },
-  { name:'hitman pc', endpoint:'pc-service.hitman.io', platform:'azure', url:'https://stats.hitmanstat.us/?m=5ab61adfdc71617fbf734888' },
-  { name:'hitman xbox one', endpoint:'xboxone-service.hitman.io', platform:'azure', url:'https://stats.hitmanstat.us/?m=5ab61affdc71617fbf73488b' },
-  { name:'hitman ps4', endpoint:'ps4-service.hitman.io', platform:'azure', url:'https://stats.hitmanstat.us/?m=5ab61b28dc7161082a1a5c14' },
-  { name:'sniper assassin pc', endpoint:'scpc-service.hitman.io', platform:'azure', url:'https://stats.hitmanstat.us/?m=5ab61adfdc71617fbf734888' },
-  { name:'sniper assassin xbox one', endpoint:'scxboxone-service.hitman.io', platform:'azure', url:'https://stats.hitmanstat.us/?m=5ab61affdc71617fbf73488b' },
-  { name:'sniper assassin ps4', endpoint:'scps4-service.hitman.io', platform:'azure', url:'https://stats.hitmanstat.us/?m=5ab61b28dc7161082a1a5c14' },
+  { name:'hitman authentication', endpoint:'auth.hitman.io', platform:'azure' },
+  { name:'hitman pc', endpoint:'pc-service.hitman.io', platform:'azure' },
+  { name:'hitman xbox one', endpoint:'xboxone-service.hitman.io', platform:'azure' },
+  { name:'hitman ps4', endpoint:'ps4-service.hitman.io', platform:'azure' },
+  { name:'sniper assassin pc', endpoint:'scpc-service.hitman.io', platform:'azure' },
+  { name:'sniper assassin xbox one', endpoint:'scxboxone-service.hitman.io', platform:'azure' },
+  { name:'sniper assassin ps4', endpoint:'scps4-service.hitman.io', platform:'azure' },
   { name:'steam webapi', endpoint:'webapi', platform:'steam', url:'https://steamstat.us/' },
   { name:'steam cms', endpoint:'cms', platform:'steam', url:'https://steamstat.us/' },
   { name:'hitmanforum.com', endpoint:'hitmanforum', platform:'discourse', url:'http://www.hitmanforum.com/' }

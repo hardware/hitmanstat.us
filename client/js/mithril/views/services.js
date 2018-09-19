@@ -11,7 +11,7 @@ services.oncreate = function() {
 
 services.view = function() {
   return m("#services", { class:"services-block" }, services.list.map(function(service) {
-    return m("a", { href:service.url, target:'_blank', rel:'noopener', class: "service-block"}, [
+    return m("a", { href:(service.url) ? service.url : '#', target:(service.url) ? '_blank' : '_self', rel:'noopener', class: "service-block"}, [
       m("div", { class:setClass(service) }),
       m("h1", service.name),
       m("h2", setState(service)),
