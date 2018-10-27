@@ -35,6 +35,20 @@ app.use(helmet({
   },
   referrerPolicy: {
     policy: 'no-referrer'
+  },
+  featurePolicy: {
+    features: {
+      fullscreen: ["'self'"],
+      camera: ["'none'"],
+      geolocation: ["'none'"],
+      gyroscope: ["'none'"],
+      magnetometer: ["'none'"],
+      microphone: ["'none'"],
+      midi: ["'none'"],
+      payment: ["'none'"],
+      speaker: ["'none'"],
+      syncXhr: ["'none'"]
+    }
   }
 }));
 
