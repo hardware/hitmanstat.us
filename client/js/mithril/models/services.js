@@ -10,9 +10,9 @@ services.list = [
   { name:'hitman pc', endpoint:'pc-service.hitman.io', platform:'azure' },
   { name:'hitman xbox one', endpoint:'xboxone-service.hitman.io', platform:'azure' },
   { name:'hitman ps4', endpoint:'ps4-service.hitman.io', platform:'azure' },
-  { name:'sniper assassin pc', endpoint:'scpc-service.hitman.io', platform:'azure' },
-  { name:'sniper assassin xbox one', endpoint:'scxboxone-service.hitman.io', platform:'azure' },
-  { name:'sniper assassin ps4', endpoint:'scps4-service.hitman.io', platform:'azure' },
+  { name:'hitman 2 pc', endpoint:'pc2-service.hitman.io', platform:'azure' },
+  { name:'hitman 2 xbox one', endpoint:'xboxone2-service.hitman.io', platform:'azure' },
+  { name:'hitman 2 ps4', endpoint:'ps42-service.hitman.io', platform:'azure' },
   { name:'steam webapi', endpoint:'webapi', platform:'steam', url:'https://steamstat.us/' },
   { name:'steam cms', endpoint:'cms', platform:'steam', url:'https://steamstat.us/' },
   { name:'hitmanforum.com', endpoint:'hitmanforum', platform:'discourse', url:'http://www.hitmanforum.com/' }

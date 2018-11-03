@@ -234,9 +234,9 @@ router.get('/status/hitman', function(req, res, next) {
     { service:"HITMAN PC", status:"down" },
     { service:"HITMAN XboxOne", status:"down" },
     { service:"HITMAN PS4", status:"down" },
-    { service:"HITMAN SNIPER ASSASSIN PC", status:"down" },
-    { service:"HITMAN SNIPER ASSASSIN XboxOne", status:"down" },
-    { service:"HITMAN SNIPER ASSASSIN PS4", status:"down" }
+    { service:"HITMAN 2 PC", status:"down" },
+    { service:"HITMAN 2 XboxOne", status:"down" },
+    { service:"HITMAN 2 PS4", status:"down" }
   ];
 
   httpHighThrottle.request(options).then(function(response) {
@@ -253,9 +253,9 @@ router.get('/status/hitman', function(req, res, next) {
         events[1].status = formatServiceStatus(hitmanLastRequestContent.services['pc-service.hitman.io'].health, 'hitman');
         events[2].status = formatServiceStatus(hitmanLastRequestContent.services['xboxone-service.hitman.io'].health, 'hitman');
         events[3].status = formatServiceStatus(hitmanLastRequestContent.services['ps4-service.hitman.io'].health, 'hitman');
-        events[4].status = formatServiceStatus(hitmanLastRequestContent.services['scpc-service.hitman.io'].health, 'hitman');
-        events[5].status = formatServiceStatus(hitmanLastRequestContent.services['scxboxone-service.hitman.io'].health, 'hitman');
-        events[6].status = formatServiceStatus(hitmanLastRequestContent.services['scps4-service.hitman.io'].health, 'hitman');
+        events[4].status = formatServiceStatus(hitmanLastRequestContent.services['pc2-service.hitman.io'].health, 'hitman');
+        events[5].status = formatServiceStatus(hitmanLastRequestContent.services['xboxone2-service.hitman.io'].health, 'hitman');
+        events[6].status = formatServiceStatus(hitmanLastRequestContent.services['ps42-service.hitman.io'].health, 'hitman');
         submitEvents(events);
       }
       res.json(hitmanLastRequestContent);
@@ -363,12 +363,13 @@ function submitEvents(events) {
             for (index = 0; index < noUpEvents.length; index++)
               if(noUpEvents[index].status == 'maintenance')
                 maintenanceMode++;
-            if(maintenanceMode >= 3) {
-              if(noUpEvents[0].service.startsWith('HITMAN SNIPER ASSASSIN'))
-                noUpEvents = [{ service:"HITMAN SNIPER ASSASSIN PC / Xbox One / PS4", status:"maintenance" }];
+            if(maintenanceMode >= 3 && maintenanceMode < 6) {
+              if(noUpEvents[0].service.startsWith('HITMAN 2'))
+                noUpEvents = [{ service:"HITMAN 2 PC / Xbox One / PS4", status:"maintenance" }];
               else
                 noUpEvents = [{ service:"HITMAN PC / Xbox One / PS4", status:"maintenance" }];
-            }
+            } else if(maintenanceMode === 6)
+              noUpEvents = [{ service:"HITMAN & HITMAN 2 PC / Xbox One / PS4", status:"maintenance" }];
           }
           break;
       }
