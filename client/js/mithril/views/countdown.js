@@ -22,7 +22,7 @@ function tack() {
     if (time.days > 0 || time.hours > 0 || time.minutes > 0 || time.seconds > 0)
       content += ('0' + time.seconds).slice(-2) + " second" + (time.seconds > 1 ? "s" : "");
     else
-      content = '<a href="https://hitman.com/">https://hitman.com/</a>';
+      content = '<a href="https://hitman.com/">Make the world your weapon</a>';
     if(time.total <= 0)
       clearInterval(timeinterval);
   }, 1000);
