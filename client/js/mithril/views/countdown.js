@@ -22,7 +22,7 @@ function tack() {
     if (time.days > 0 || time.hours > 0 || time.minutes > 0 || time.seconds > 0)
       content += ('0' + time.seconds).slice(-2) + " sec";
     else
-      content = '<a href="https://www.ioi.dk/hitman-hd-enhanced-collection/">Available now !</a>';
+      content = '<a href="https://hitman.com/">Make the world your weapon</a>';
     if(time.total <= 0)
       clearInterval(timeinterval);
   }, 1000);

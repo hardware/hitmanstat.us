@@ -323,6 +323,7 @@ function submitEvents(events) {
   var noUpEvents = [];
   var downCounter = 0;
   var type = "";
+  var firstEvent = false;
 
   if(events[0].service.startsWith('STEAM')) {
     type = "STEAM";
@@ -341,9 +342,10 @@ function submitEvents(events) {
 
   // If one or more services are not available
   if (noUpEvents.length > 0) {
-    if(downCounter === 0)
+    if(downCounter === 0) {
       downCounter++;
-    else if(downCounter > 1)
+      firstEvent = true;
+    } else if(downCounter > 1)
       downCounter = downCounter * 2;
     if(!moment().isAfter(moment(initialTime.toISOString()).add(downCounter, 'm')))
       return;
@@ -374,11 +376,14 @@ function submitEvents(events) {
           break;
       }
     }
-    debug('Sending %d event(s)', noUpEvents.length);
-    var query = pgp.helpers.insert(noUpEvents, cs);
-    db.none(query).catch(function(error) {
-      console.error("Failed to submit data to database. Routine " + error.routine + " " + error);
-    });
+    if(!firstEvent) {
+      debug('Sending %d event(s)', noUpEvents.length);
+      var query = pgp.helpers.insert(noUpEvents, cs);
+      db.none(query).catch(function(error) {
+        console.error("Failed to submit data to database. Routine " + error.routine + " " + error);
+      });
+    } else
+      debug("Isolated '%s' down event, waiting for a second event.", type);
   } else {
     debug("No event sent. Service type '%s' seems available, only 'up' or 'high load' events have been received", type);
     switch (type) {

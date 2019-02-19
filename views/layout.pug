@@ -32,5 +32,6 @@ html(lang='en')
   body#main-page
     include header
     block content
-    include footer
+    if path == '/'
+      include footer
     include includes/build/javascript
