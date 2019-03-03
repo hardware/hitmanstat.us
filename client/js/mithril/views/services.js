@@ -15,7 +15,8 @@ services.view = function() {
       m("div", { class:setClass(service) }),
       m("h1", service.name),
       m("h2", setState(service)),
-      setPopover(service)
+      setInfo(service),
+      setElusive(service)
     ]);
   }));
 };
@@ -31,7 +32,7 @@ function setState(service) {
   return status + title;
 }
 
-function setPopover(service) {
+function setInfo(service) {
   if(service.nextWindow) {
     return [
       m("span", { class:'help' }, [ '?',
@@ -60,6 +61,48 @@ function setPopover(service) {
         ])
       ])
     ];
+  }
+}
+
+function setElusive(service) {
+  if(service.elusive) {
+    var start = moment(service.elusive.nextWindow.start);
+    var end = moment(service.elusive.nextWindow.end);
+    var duration = moment.duration(start.diff(moment()));
+    return [
+      m("span", { class:'help elusive' }, [ 'Elusive target',
+        m("span", { class:'popover' }, [
+          m('p', 'ELUSIVE TARGET CONTRACT ACTIVATED'),
+          m('hr'),
+          m('p', [
+            m('span', { class: 'item' }, 'Name :'),
+            service.elusive.name
+          ]),
+          m('p', [
+            m('span', { class: 'item' }, 'Start in :'),
+            duration.humanize()
+          ]),
+          m('p', [
+            m('span', { class: 'item' }, 'Location :'),
+            service.elusive.location
+          ]),
+          m('p', [
+            m('span', { class: 'item' }, 'Start :'),
+            start.format(dateFormat)
+          ]),
+          m('p', [
+            m('span', { class: 'item' }, 'End :'),
+            end.format(dateFormat)
+          ]),
+          m('p', [
+            m('span', { class: 'item' }, 'Duration :'),
+            end.diff(start, 'days') + ' days'
+          ])
+        ])
+      ])
+    ];
+  } else {
+    return [];
   }
 }
 

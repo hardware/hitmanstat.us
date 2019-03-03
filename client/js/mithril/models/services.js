@@ -2,7 +2,7 @@
 'use strict';
 
 var services = services || {};
-var dateFormat = 'MMM Do YYYY hh:mmA';
+var dateFormat = 'YYYY.MM.DD hh:mmA';
 var HitmanNotification = false;
 
 services.list = [
@@ -87,6 +87,19 @@ services.refresh = function() {
         service.title = (service.status == 'warn') ? 'high load' : '';
         service.nextWindow = (nextWindow) ? nextWindow : null;
         service.lastCheck = lastCheck;
+        // Elusives status
+        if(result.elusives) {
+          var elusive = result.elusives[service.endpoint][0];
+          if(elusive) {
+            service.elusive = {
+              name: elusive.name,
+              tile: elusive.tile,
+              description: elusive.description,
+              location: elusive.location,
+              nextWindow: elusive.nextWindow,
+            };
+          }
+        }
       });
     }
   });
