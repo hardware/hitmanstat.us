@@ -34,13 +34,34 @@ function setState(service) {
 
 function setInfo(service) {
   if(service.nextWindow) {
+    var start = moment(service.nextWindow.start);
+    var end = moment(service.nextWindow.end);
+    var duration = moment.duration(start.diff(moment()));
     return [
-      m("span", { class:'help' }, [ '?',
+      m("span", { class:'help schedule' }, [ 'M',
         m("span", { class:'popover' }, [
-          m('p', 'Next maintenance period :'),
-          m('p', 'Start : ' + moment(service.nextWindow.start).format(dateFormat)),
-          m('p', 'End : ' + moment(service.nextWindow.end).format(dateFormat)),
-          m('p', 'Last check : ' + service.lastCheck)
+          m('p', 'MAINTENANCE SCHEDULED'),
+          m('hr'),
+          m('p', [
+            m('span', { class: 'item' }, 'Start in :'),
+            duration.humanize()
+          ]),
+          m('p', [
+            m('span', { class: 'item' }, 'Start :'),
+            start.format(dateFormat)
+          ]),
+          m('p', [
+            m('span', { class: 'item' }, 'End :'),
+            end.format(dateFormat)
+          ]),
+          m('p', [
+            m('span', { class: 'item' }, 'Duration :'),
+            end.diff(start, 'hours') + ' hours'
+          ]),
+          m('p', [
+            m('span', { class: 'item' }, 'Last check :'),
+            service.lastCheck
+          ])
         ])
       ])
     ];
@@ -48,8 +69,16 @@ function setInfo(service) {
     return [
       m("span", { class:'help' }, [ '?',
         m("span", { class:'popover' }, [
-          m('p', 'STATUS : ' + service.state),
-          m('p', 'Last check : ' + service.lastCheck)
+          m('p', 'INFORMATIONS'),
+          m('hr'),
+          m('p', [
+            m('span', { class: 'item' }, 'Status :'),
+            service.state
+          ]),
+          m('p', [
+            m('span', { class: 'item' }, 'Last check :'),
+            service.lastCheck
+          ])
         ])
       ])
     ];
@@ -57,7 +86,12 @@ function setInfo(service) {
     return [
       m("span", { class:'help' }, [ '?',
         m("span", { class:'popover' }, [
-          m('p', 'Last check : ' + service.lastCheck)
+          m('p', 'INFORMATIONS'),
+          m('hr'),
+          m('p', [
+            m('span', { class: 'item' }, 'Last check :'),
+            service.lastCheck
+          ])
         ])
       ])
     ];

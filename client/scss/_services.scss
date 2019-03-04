@@ -2,7 +2,6 @@
   width: 1330px;
   padding-bottom: 25px;
   margin: 15px auto 0;
-  overflow: hidden;
 }
 
 #services {
@@ -83,8 +82,8 @@
   cursor: help;
   display: inline-block;
   font-family: 'Open Sans',Verdana,Arial,sans-serif;
-  font-size: 19px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 600;
   height: 25px;
   line-height: 25px;
   position: relative;
@@ -99,14 +98,28 @@
     box-shadow: 0 0 5px rgba(0,0,0,0.4);
     color: #fff;
     display: none;
-    font-size: 12px;
-    line-height: 15px;
+    font-size: 15px;
+    line-height: 20px;
     font-family: 'Open Sans',Verdana,Arial,sans-serif;
-    left: -108px;
+    left: -147px;
     padding: 7px 10px;
     position: absolute;
-    width: 221px;
-    z-index: 4;
+    width: 300px;
+    z-index: 10;
+    text-align: left;
+
+    hr {
+      height: 1px;
+      padding: 0;
+      color: #FF0068;
+      background-color: #FF0068;
+      border: 0;
+    }
+
+    .item {
+      color: #02BDDA;
+      margin-right: 8px;
+    }
 
     &:before {
       border-top: 7px solid rgba(90,64,95,0.90);
@@ -132,31 +145,17 @@
   }
 }
 
+.help.schedule {
+  background-color:rgba(235, 165, 61, 0.89);
+}
+
 .help.elusive {
   background-color:rgba(155, 14, 77, 0.89);
   margin-left: 5px;
   width: 132px;
-  font-size: 17px;
-  font-weight: 600;
 
   .popover {
-    text-align: left;
     width: 400px;
-    font-size:15px;
-    line-height: 20px;
-
-    hr {
-      height: 2px;
-      padding: 0;
-      color: #FF0068;
-      background-color: #FF0068;
-      border: 0;
-    }
-
-    .item {
-      color: #02BDDA;
-      margin-right: 8px;
-    }
   }
 }
 
