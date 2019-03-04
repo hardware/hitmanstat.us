@@ -76,7 +76,7 @@
 }
 
 .help {
-  background-color: #02bdda;
+  background-color: rgba(2,189,218,0.85);
   border-radius: 16px;
   color: #fff;
   cursor: help;
@@ -122,7 +122,7 @@
     }
 
     &:before {
-      border-top: 7px solid rgba(90,64,95,0.90);
+      border-top: 7px solid rgba(90,64,95,0.85);
       border-right: 7px solid transparent;
       border-left: 7px solid transparent;
       bottom: -7px;
@@ -146,11 +146,11 @@
 }
 
 .help.schedule {
-  background-color:rgba(235, 165, 61, 0.89);
+  background-color:rgba(235, 165, 61, 0.85);
 }
 
 .help.elusive {
-  background-color:rgba(155, 14, 77, 0.89);
+  background-color:rgba(155, 14, 77, 0.85);
   margin-left: 5px;
   width: 132px;
 
