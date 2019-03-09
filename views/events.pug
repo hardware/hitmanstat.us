@@ -2,8 +2,10 @@ extends layout
 
 block content
   #error-container
-    p LATEST DOWN OR MAINTENANCE EVENTS REPORTED
-    span
+    p LATEST DOWN OR MAINTENANCE EVENTS REPORTED&nbsp;
+      span.help ?
+        span.popover The first event appears if the service is unavailable for more than a minute. Following events are delayed each time until the service becomes available again.
+    span.separator
     p.small Since #{days} days ago | &nbsp;
       if days == 30
         a(href="/events") Show last week

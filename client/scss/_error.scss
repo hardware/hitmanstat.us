@@ -2,14 +2,13 @@
   padding-top: 25px;
   padding-bottom: 25px;
   margin: 30px auto;
-  overflow: hidden;
   color: #FFF;
   font-weight: 700;
   font-size: 30px;
   background-color:rgba(255,0,0,0.3);
   border-radius: 5px;
 
-  span {
+  span.separator {
     display: inline-block;
     width: 200px;
     height: 4px;
