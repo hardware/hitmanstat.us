@@ -11,8 +11,8 @@ var countdown = {
 
 function tack() {
   var timeinterval = setInterval(function() {
-    content = "";
-    var time = getRemainingTime("Jan 11 2019 00:00:00 GMT+0100");
+    content = "New sniper map in ";
+    var time = getRemainingTime("Mar 26 2019 14:00:00 GMT+0100");
     if (time.days > 0)
       content += time.days + " day" + (time.days > 1 ? "s" : "") + " ";
     if (time.days > 0 || time.hours > 0)
@@ -22,7 +22,7 @@ function tack() {
     if (time.days > 0 || time.hours > 0 || time.minutes > 0 || time.seconds > 0)
       content += ('0' + time.seconds).slice(-2) + " sec";
     else
-      content = '<a href="https://hitman.com/">Make the world your weapon</a>';
+      content = '<a href="https://www.ioi.dk/hitman-2-march-roadmap/">New sniper map available</a>';
     if(time.total <= 0)
       clearInterval(timeinterval);
   }, 1000);

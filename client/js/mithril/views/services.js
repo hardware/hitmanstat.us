@@ -43,7 +43,7 @@ function setInfo(service) {
           m('p', 'MAINTENANCE SCHEDULED'),
           m('hr'),
           m('p', [
-            m('span', { class: 'item' }, 'Start in :'),
+            m('span', { class: 'item' }, (moment().isAfter(start)) ? 'Started since :' : 'Start in :'),
             duration.humanize()
           ]),
           m('p', [
@@ -113,7 +113,7 @@ function setElusive(service) {
             service.elusive.name
           ]),
           m('p', [
-            m('span', { class: 'item' }, 'Start in :'),
+            m('span', { class: 'item' }, (moment().isAfter(start)) ? 'Started since :' : 'Start in :'),
             duration.humanize()
           ]),
           m('p', [

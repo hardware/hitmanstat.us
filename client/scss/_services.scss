@@ -35,7 +35,7 @@
   transition: all ease .25s;
 
   h1 {
-    padding: 12px 0 3px 0;
+    padding: 9px 0 3px 0;
     font-size: 16px;
     font-weight: 800;
     color: #5a405f;
@@ -44,13 +44,14 @@
   }
 
   h2 {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
-    color: #93969f;
+    color: #74767d;
     text-transform: uppercase;
     letter-spacing: 0;
     transition: all ease .25s;
     margin-top: 3px;
+    margin-bottom: 2px;
   }
 
   .service-status {
